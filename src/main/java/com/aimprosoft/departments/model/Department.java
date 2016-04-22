@@ -1,7 +1,8 @@
 package com.aimprosoft.departments.model;
 
-import net.sf.oval.constraint.*;
 import com.aimprosoft.departments.utils.UniqueDepartment;
+import net.sf.oval.constraint.*;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.persistence.*;
 import java.util.List;
@@ -25,10 +26,10 @@ public class Department {
     @NotEmpty(message = "Must be not empty")
     @Length(min = 3, max = 20, message = "Invalid length")
     @NotBlank(message = "Must be without spaces")
-    @CheckWith(value = com.aimprosoft.departments.utils.UniqueDepartment.class, message = "Name is used")
+    @CheckWith(value = UniqueDepartment.class, message = "Name is used")
     private String name;
 
-    @OneToMany(targetEntity = Employee.class,  mappedBy = "department")
+    @OneToMany(targetEntity = Employee.class, mappedBy = "department")
     private List<Employee> employees;
 
     public List<Employee> getEmployees() {

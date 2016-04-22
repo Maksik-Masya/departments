@@ -3,14 +3,20 @@ package com.aimprosoft.departments.utils;
 import com.aimprosoft.departments.model.Employee;
 import net.sf.oval.constraint.CheckWithCheck;
 import com.aimprosoft.departments.service.EmployeeService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
 import java.util.Objects;
 
 /**
  * Created on 12.04.16.
  */
 
+@Component
 public class UniqueEmail implements CheckWithCheck.SimpleCheck {
-    private EmployeeService employeeService = ApplicationContextSetter.getBean(EmployeeService.class);
+
+    @Autowired
+    private EmployeeService employeeService;
 
     @Override
     public boolean isSatisfied(Object validatedObject, Object value) {
