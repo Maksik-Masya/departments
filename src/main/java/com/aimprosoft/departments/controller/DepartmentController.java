@@ -44,7 +44,6 @@ public class DepartmentController {
     @RequestMapping(value = "/saveDepartment")
     public ModelAndView saveDepartment(@RequestParam(required = false) Integer departmentId,
                                        @RequestParam(required = false) String name) {
-
         ModelAndView modelAndView = new ModelAndView("redirect:/");
         Department department = new Department();
         department.setName(name);
