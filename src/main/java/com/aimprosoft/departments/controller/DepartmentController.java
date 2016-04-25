@@ -5,7 +5,9 @@ import com.aimprosoft.departments.model.Department;
 import com.aimprosoft.departments.service.DepartmentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -27,7 +29,6 @@ public class DepartmentController {
         ModelAndView modelAndView = new ModelAndView("listDepartment");
         List<Department> departmentList = departmentService.getAllDepartments();
         modelAndView.addObject("departments", departmentList);
-
         return modelAndView;
     }
 
@@ -41,12 +42,10 @@ public class DepartmentController {
         return modelAndView;
     }
 
-    @RequestMapping(value = "/saveDepartment")
+    @RequestMapping(value = "/saveDepartment", method = RequestMethod.POST)
     public ModelAndView saveDepartment(@RequestParam(required = false) Integer departmentId,
-                                       @RequestParam(required = false) String name) {
+                                       Department department) {
         ModelAndView modelAndView = new ModelAndView("redirect:/");
-        Department department = new Department();
-        department.setName(name);
         if (departmentId != null) {
             department.setDepartmentid(departmentId);
         }
@@ -69,5 +68,4 @@ public class DepartmentController {
         departmentService.deleteDepartment(department);
         return modelAndView;
     }
-
 }

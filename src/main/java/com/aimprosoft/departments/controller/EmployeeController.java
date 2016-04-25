@@ -5,14 +5,17 @@ import com.aimprosoft.departments.model.Department;
 import com.aimprosoft.departments.model.Employee;
 import com.aimprosoft.departments.service.DepartmentService;
 import com.aimprosoft.departments.service.EmployeeService;
-import com.aimprosoft.departments.utils.StringFieldConverter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.WebDataBinder;
+import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -56,27 +59,20 @@ public class EmployeeController {
         return modelAndView;
     }
 
-    @RequestMapping(value = "/saveEmployee")
-    public ModelAndView saveEmployee(@RequestParam(required = false) String  dob,
-                                     @RequestParam(required = false) String salary,
-                                     @RequestParam(required = false) String id,
-                                     @RequestParam(required = false) Integer id_department,
-                                     @RequestParam(required = false) String firstName,
-                                     @RequestParam(required = false) String lastName,
-                                     @RequestParam(required = false) String email) {
-        ModelAndView modelAndView = new ModelAndView("redirect:/listEmployee");
-        Date convertedDOB = StringFieldConverter.convertStringToDate(dob);
-        Integer convertedSalary = StringFieldConverter.convertStringToInteger(salary);
-        Integer convertedId = StringFieldConverter.convertStringToInteger(id);
+    @InitBinder
+    public void initBinder(WebDataBinder binder) {
+        binder.setDisallowedFields("id");
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        binder.registerCustomEditor(Date.class, "dob", new CustomDateEditor(dateFormat, false));
+    }
 
-        Employee employee = new Employee();
-        employee.setFirstName(firstName);
-        employee.setLastName(lastName);
-        employee.setDob(convertedDOB);
-        employee.setSalary(convertedSalary);
-        employee.setEmail(email);
-        if (convertedId != null) {
-            employee.setId(convertedId);
+    @RequestMapping(value = "/saveEmployee")
+    public ModelAndView saveEmployee(@RequestParam(required = false) Integer id,
+                                     @RequestParam(required = false) Integer id_department,
+                                     Employee employee) {
+        ModelAndView modelAndView = new ModelAndView("redirect:/listEmployee");
+        if (id != null) {
+            employee.setId(id);
         }
         try {
             modelAndView.addObject("department_name", departmentService.getDepartmentById(id_department).getName());
