@@ -29,7 +29,7 @@
                     </form>
                 </td>
                 <td align="center">
-                    <form action="addEditDepartment" method="POST">
+                    <form action="addEditDepartment" method="GET">
                         <input type="hidden" name="departmentId" value="${department.departmentid}">
                         <input type="submit" value="Update">
                     </form>

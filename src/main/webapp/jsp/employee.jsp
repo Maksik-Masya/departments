@@ -11,11 +11,11 @@
 </head>
 <body>
 
-<form:errors path="employee.*"/>
+<%--<form:errors path="employee.*"/>--%>
 
-<form method="POST" class="form-container" action='saveEmployee' name="frmAddEmployee">
+<form method="POST" class="form-container" action='/saveEmployee' >
 
-    <input type="hidden" readonly="readonly" name="id"
+    <input type="hidden" name="id"
     <%--value="<c:out value="${employee.id}" />"/>--%>
            value="<c:out value="${param['id'] eq null ? employee.id : param['id']}"/>"/>
 
@@ -25,7 +25,8 @@
 
     <div class="form-field">
         <input class="input-field" type="text" name="firstName"
-               value="<c:out value="${param['firstName'] eq null ? employee.firstName : param['firstName']}"/>"/>
+        value="<c:out value="${employee.firstName}" />"/>
+               <%--value="<c:out value="${param['firstName'] eq null ? employee.firstName : param['firstName']}"/>"/>--%>
         <H1 class="error-field"><c:out value="${errors.firstName}"/></H1>
     </div>
 
@@ -33,7 +34,8 @@
 
     <div class="form-field">
         <input class="input-field" type="text" name="lastName"
-               value="<c:out value="${param['lastName'] eq null ? employee.lastName : param['lastName']}"/>"/>
+               value="<c:out value="${employee.lastName}" />"/>
+               <%--value="<c:out value="${param['lastName'] eq null ? employee.lastName : param['lastName']}"/>"/>--%>
         <H1 class="error-field"><c:out value="${errors.lastName}"/></H1>
     </div>
 
@@ -42,6 +44,7 @@
     <div class="form-field">
         <input class="input-field" type="text" placeholder="yyyy-MM-dd" name="dob"
                value="<c:out value="${param['dob'] eq null ? employee.dob : param['dob']}"/>"/>
+               <%--value="<c:out value="${employee.dob}" />"/>--%>
         <H1 class="error-field"><c:out value="${errors.dob}"/></H1>
     </div>
 
@@ -50,6 +53,7 @@
     <div class="form-field">
         <input class="input-field" type="text" name="salary"
                value="<c:out value="${param['salary'] eq null ? employee.salary : param['salary']}"/>"/>
+               <%--value="<c:out value="${employee.salary}" />"/>--%>
         <H1 class="error-field"><c:out value="${errors.salary}"/></H1>
     </div>
 
@@ -57,7 +61,8 @@
 
     <div class="form-field">
         <input class="input-field" type="text" name="email"
-               value="<c:out value="${param['email'] eq null ? employee.email : param['email']}"/>"/>
+               <%--value="<c:out value="${param['email'] eq null ? employee.email : param['email']}"/>"/>--%>
+               value="<c:out value="${employee.email}" />"/>
         <H1 class="error-field"><c:out value="${errors.email}"/></H1>
     </div>
 

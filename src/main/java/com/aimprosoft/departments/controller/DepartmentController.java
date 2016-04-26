@@ -25,7 +25,7 @@ public class DepartmentController {
     @Autowired
     private DepartmentService departmentService;
 
-    @RequestMapping(value = "/")
+    @RequestMapping(value = "/", method = RequestMethod.GET)
     public ModelAndView departmentList() {
         ModelAndView modelAndView = new ModelAndView("listDepartment");
         List<Department> departmentList = departmentService.getAllDepartments();
@@ -33,7 +33,7 @@ public class DepartmentController {
         return modelAndView;
     }
 
-    @RequestMapping(value = "/addEditDepartment")
+    @RequestMapping(value = "/addEditDepartment", method = RequestMethod.GET)
     public ModelAndView addOrEditDepartment(@RequestParam(required = false) Integer departmentId) {
         ModelAndView modelAndView = new ModelAndView("department");
         if (departmentId != null) {
@@ -62,7 +62,7 @@ public class DepartmentController {
         }
     }
 
-    @RequestMapping(value = "/delDepartment")
+    @RequestMapping(value = "/delDepartment", method = RequestMethod.POST)
     public ModelAndView deleteDepartment(@RequestParam(required = false) Integer departmentId) {
         ModelAndView modelAndView = new ModelAndView("redirect:/");
         Department department = departmentService.getDepartmentById(departmentId);

@@ -5,14 +5,16 @@ import com.aimprosoft.departments.model.Department;
 import com.aimprosoft.departments.model.Employee;
 import com.aimprosoft.departments.service.DepartmentService;
 import com.aimprosoft.departments.service.EmployeeService;
-import com.aimprosoft.departments.utils.CustomFormatter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
+import org.springframework.format.datetime.DateFormatter;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.WebDataBinder;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.InitBinder;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.text.SimpleDateFormat;
@@ -34,11 +36,7 @@ public class EmployeeController {
 
     @InitBinder
     public void initBinder(WebDataBinder binder) {
-        binder.setDisallowedFields("id");
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        binder.registerCustomEditor(Date.class, "dob", new CustomDateEditor(dateFormat, false));
-        binder.addCustomFormatter(new CustomFormatter<Date>());
-        binder.addCustomFormatter(new CustomFormatter<Integer>());
+        binder.addCustomFormatter(new DateFormatter("yyyy-MM-dd"));
     }
 
     @RequestMapping(value = "/listEmployee")
@@ -69,20 +67,9 @@ public class EmployeeController {
     }
 
     @RequestMapping(value = "/saveEmployee", method = RequestMethod.POST)
-    public ModelAndView saveEmployee(@RequestParam(required = false) Integer id,
-                                     @RequestParam(required = false) Integer id_department,
-                                     Employee employee, BindingResult result) {
-
+    public ModelAndView saveEmployee(@RequestParam(required = false) Integer id_department,
+                                     Employee employee, BindingResult bindingResult) {
         ModelAndView modelAndView = new ModelAndView("redirect:/listEmployee");
-
-        if(result.hasErrors()) {
-            modelAndView.setViewName("employee");
-            return  modelAndView;
-        }
-
-        if (id != null) {
-            employee.setId(id);
-        }
         try {
             modelAndView.addObject("department_name", departmentService.getDepartmentById(id_department).getName());
             modelAndView.addObject("departments", departmentService.getAllDepartments());
@@ -101,10 +88,9 @@ public class EmployeeController {
     }
 
     @RequestMapping(value = "/delEmployee")
-    public ModelAndView deleteEmployee(@RequestParam(required = false) Integer id,
+    public ModelAndView deleteEmployee(Employee employee,
                                        @RequestParam(required = false) Integer id_department) {
         ModelAndView modelAndView = new ModelAndView("redirect:/listEmployee");
-        Employee employee = employeeService.getEmployeeById(id);
         employeeService.deleteEmployee(employee);
         modelAndView.addObject("departmentId", id_department);
         return modelAndView;

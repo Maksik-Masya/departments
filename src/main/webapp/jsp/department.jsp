@@ -12,7 +12,7 @@
 <body>
 
 
-<form class="form-container" method="POST" action='saveDepartment' name="frmAddDepartment">
+<form class="form-container" method="POST" action='saveDepartment'>
 
     <input type="hidden" name="departmentId"
            value="<c:out value="${department.departmentid}" />"/> <br/>
