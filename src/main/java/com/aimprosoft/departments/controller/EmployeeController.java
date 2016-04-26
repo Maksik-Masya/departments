@@ -6,7 +6,6 @@ import com.aimprosoft.departments.model.Employee;
 import com.aimprosoft.departments.service.DepartmentService;
 import com.aimprosoft.departments.service.EmployeeService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.format.datetime.DateFormatter;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
@@ -17,8 +16,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -43,13 +40,10 @@ public class EmployeeController {
     public ModelAndView listEmployees(@RequestParam(required = false) Integer departmentId) {
         ModelAndView modelAndView = new ModelAndView("listEmployee");
         Department department = departmentService.getDepartmentById(departmentId);
-        String department_name = department.getName();
         List employeeList = employeeService.getEmployeeByDepartmentId(department);
 
-        modelAndView.addObject("id_department", departmentId);
         modelAndView.addObject("employees", employeeList);
-        modelAndView.addObject("department_name", department_name);
-        modelAndView.addObject("departmentId", departmentId);
+        modelAndView.addObject("department", department);
         return modelAndView;
     }
 
@@ -67,7 +61,7 @@ public class EmployeeController {
     }
 
     @RequestMapping(value = "/saveEmployee", method = RequestMethod.POST)
-    public ModelAndView saveEmployee(@RequestParam(required = false) Integer id_department,
+    public ModelAndView saveEmployee(@RequestParam Integer id_department,
                                      Employee employee, BindingResult bindingResult) {
         ModelAndView modelAndView = new ModelAndView("redirect:/listEmployee");
         try {
@@ -88,8 +82,8 @@ public class EmployeeController {
     }
 
     @RequestMapping(value = "/delEmployee")
-    public ModelAndView deleteEmployee(Employee employee,
-                                       @RequestParam(required = false) Integer id_department) {
+    public ModelAndView deleteEmployee(@RequestParam(required = false) Integer id_department,
+                                       Employee employee) {
         ModelAndView modelAndView = new ModelAndView("redirect:/listEmployee");
         employeeService.deleteEmployee(employee);
         modelAndView.addObject("departmentId", id_department);

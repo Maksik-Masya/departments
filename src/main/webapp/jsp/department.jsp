@@ -14,7 +14,7 @@
 
 <form class="form-container" method="POST" action='saveDepartment'>
 
-    <input type="hidden" name="departmentId"
+    <input type="hidden" name="departmentid"
            value="<c:out value="${department.departmentid}" />"/> <br/>
 
 
