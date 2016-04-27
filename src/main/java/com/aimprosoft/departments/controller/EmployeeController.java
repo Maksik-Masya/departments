@@ -5,7 +5,6 @@ import com.aimprosoft.departments.model.Department;
 import com.aimprosoft.departments.model.Employee;
 import com.aimprosoft.departments.service.DepartmentService;
 import com.aimprosoft.departments.service.EmployeeService;
-import com.aimprosoft.departments.utils.CustomFormatter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.stereotype.Controller;

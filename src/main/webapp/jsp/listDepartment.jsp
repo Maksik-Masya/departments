@@ -7,6 +7,36 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=EUC-KR">
     <link type="text/css" rel="stylesheet" href="/css/myStyle.css"/>
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+
+    <script type="text/javascript">
+        $(document).ready(function() {
+
+            $.ajax({
+                type : "get",
+                contentType : "application/json",
+                url : "/myDepartment",
+                dataType : 'json',
+                success : function(data) {
+                    console.log("SUCCESS: ", data);
+                    display(data);
+                },
+                error : function(e) {
+                    console.log("ERROR: ", e);
+                    display(e);
+                },
+                done : function(e) {
+                    console.log("DONE");
+                }
+            });
+
+
+
+
+        });
+    </script>
+
+
     <title>All Departments</title>
 </head>
 <body>

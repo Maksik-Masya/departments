@@ -1,10 +1,12 @@
 package com.aimprosoft.departments.model;
 
 import com.aimprosoft.departments.utils.UniqueDepartment;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import net.sf.oval.constraint.*;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.List;
 
 
@@ -14,7 +16,7 @@ import java.util.List;
 
 @Entity
 @Table(name = "departments")
-public class Department {
+public class Department  {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -29,6 +31,7 @@ public class Department {
     @CheckWith(value = UniqueDepartment.class, message = "Name is used")
     private String name;
 
+    @JsonIgnore
     @OneToMany(targetEntity = Employee.class, mappedBy = "department")
     private List<Employee> employees;
 
