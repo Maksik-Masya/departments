@@ -4,7 +4,6 @@ import com.aimprosoft.departments.exception.NotValidValueException;
 import com.aimprosoft.departments.model.Department;
 import com.aimprosoft.departments.service.DepartmentService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -12,7 +11,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -73,7 +71,6 @@ public class DepartmentController {
         department.setDepartmentid(100);
         department.setName("testname");
         List<Department> list = departmentService.getAllDepartments();
-
         return list;
     }
 }

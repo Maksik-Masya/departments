@@ -8,66 +8,48 @@
     <meta http-equiv="Content-Type" content="text/html; charset=EUC-KR">
     <link type="text/css" rel="stylesheet" href="/css/myStyle.css"/>
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-
-    <script type="text/javascript">
-        $(document).ready(function() {
-
-            $.ajax({
-                type : "get",
-                contentType : "application/json",
-                url : "/myDepartment",
-                dataType : 'json',
-                success : function(data) {
-                    console.log("SUCCESS: ", data);
-                    display(data);
-                },
-                error : function(e) {
-                    console.log("ERROR: ", e);
-                    display(e);
-                },
-                done : function(e) {
-                    console.log("DONE");
-                }
-            });
-
-
-
-
-        });
-    </script>
+    <script type="text/javascript" src="/js/departments.js"></script>
 
 
     <title>All Departments</title>
 </head>
 <body>
 <div class="department-table-form">
-    <table border=1 class="department-table-container">
-        <thead>
-        <tr>
-            <th>Department Name</th>
-            <th colspan=2>Action</th>
-        </tr>
-        </thead>
-        <tbody>
-        <c:forEach items="${departments}" var="department">
+    <table border=1 class="department-table-container" id="department-table">
+        <%--<thead>--%>
+        <%--<tr>--%>
+            <%--<th>Department Name</th>--%>
+            <%--<th colspan=2>Action</th>--%>
+        <%--</tr>--%>
+        <%--</thead>--%>
+        <%--<tbody>--%>
+        <%--<c:forEach items="${departments}" var="department">--%>
+            <%--<tr>--%>
+                <%--<td><a href="listEmployee?departmentId=<c:out value="${department.departmentid}"/>"><c:out--%>
+                        <%--value="${department.name}"/></a></td>--%>
+                <%--<td align="center">--%>
+                    <%--<form action="delDepartment" method="POST">--%>
+                        <%--<input type="hidden" name="departmentId" value="${department.departmentid}">--%>
+                        <%--<input type="submit" value="Delete">--%>
+                    <%--</form>--%>
+                <%--</td>--%>
+                <%--<td align="center">--%>
+                    <%--<form action="addEditDepartment" method="GET">--%>
+                        <%--<input type="hidden" name="departmentId" value="${department.departmentid}">--%>
+                        <%--<input type="submit" value="Update">--%>
+                    <%--</form>--%>
+                <%--</td>--%>
+            <%--</tr>--%>
+        <%--</c:forEach>--%>
+        <%--</tbody>--%>
+
             <tr>
-                <td><a href="listEmployee?departmentId=<c:out value="${department.departmentid}"/>"><c:out value="${department.name}"/></a></td>
-                <td align="center">
-                    <form action="delDepartment" method="POST">
-                        <input type="hidden" name="departmentId" value="${department.departmentid}">
-                        <input type="submit" value="Delete">
-                    </form>
-                </td>
-                <td align="center">
-                    <form action="addEditDepartment" method="GET">
-                        <input type="hidden" name="departmentId" value="${department.departmentid}">
-                        <input type="submit" value="Update">
-                    </form>
-                </td>
+                <th>Name</th>
+                <th>Action</th>
             </tr>
-        </c:forEach>
-        </tbody>
+
     </table>
+
     <a class="my-link" href="/addEditDepartment">Add Department</a>
 
 </div>
