@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by max on 24.04.16.
@@ -33,36 +32,34 @@ public class DepartmentController {
     }
 
     @RequestMapping(value = "/addEditDepartment", method = RequestMethod.GET)
-    public ModelAndView addOrEditDepartment(@RequestParam(required = false) Integer departmentId) {
-        ModelAndView modelAndView = new ModelAndView("department");
+    public @ResponseBody Department addOrEditDepartment(@RequestParam(required = false) Integer departmentId) {
+        Department department = null;
         if (departmentId != null) {
-            Department department = departmentService.getDepartmentById(departmentId);
-            modelAndView.addObject("department", department);
+            department = departmentService.getDepartmentById(departmentId);
+
         }
-        return modelAndView;
+        return department;
     }
 
     @RequestMapping(value = "/saveDepartment", method = RequestMethod.POST)
-    public ModelAndView saveDepartment(Department department) {
-        ModelAndView modelAndView = new ModelAndView("redirect:/");
+    public ResponseBody  saveDepartment(Department department) {
+
+
         try {
             departmentService.addOrUpdateDepartment(department);
-            return modelAndView;
         } catch (NotValidValueException e) {
-            Map<String, String> errors = e.getErrorMap();
-            modelAndView.addObject("errors", errors);
-            modelAndView.addObject("department", department);
-            modelAndView.setViewName("department");
-            return modelAndView;
+            e.printStackTrace();
         }
+
+
+        return null;
     }
 
     @RequestMapping(value = "/delDepartment", method = RequestMethod.POST)
-    public ModelAndView deleteDepartment(@RequestParam(required = false) Integer departmentId) {
-        ModelAndView modelAndView = new ModelAndView("redirect:/");
+    public @ResponseBody Department deleteDepartment(@RequestParam(required = false) Integer departmentId) {
         Department department = departmentService.getDepartmentById(departmentId);
         departmentService.deleteDepartment(department);
-        return modelAndView;
+        return department;
     }
 
     @RequestMapping(value = "/myDepartment", method = RequestMethod.GET)

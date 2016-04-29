@@ -14,8 +14,8 @@
     <title>All Departments</title>
 </head>
 <body>
-<div class="department-table-form">
-    <table border=1 class="department-table-container" id="department-table">
+<div class="department-table-form" id="table-content">
+    <%--<table border=1 class="department-table-container" id="department-table">--%>
         <%--<thead>--%>
         <%--<tr>--%>
             <%--<th>Department Name</th>--%>
@@ -43,14 +43,14 @@
         <%--</c:forEach>--%>
         <%--</tbody>--%>
 
-            <tr>
-                <th>Name</th>
-                <th>Action</th>
-            </tr>
+            <%--<tr>--%>
+                <%--<th>Name</th>--%>
+                <%--<th>Action</th>--%>
+            <%--</tr>--%>
 
-    </table>
+    <%--</table>--%>
 
-    <a class="my-link" href="/addEditDepartment">Add Department</a>
+    <%--<a class="my-link" href="/addEditDepartment">Add Department</a>--%>
 
 </div>
 </body>
