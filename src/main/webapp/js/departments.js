@@ -1,6 +1,15 @@
+function Department() {
+    this.departmentid;
+    this.name;
+}
+
+
+
 $(document).ready(function () {
     getDepartmentsFromModel();
 });
+
+
 
 function getDepartmentsFromModel() {
     $.ajax({
@@ -22,9 +31,10 @@ function getDepartmentsFromModel() {
 }
 
 function drowDepartments(respons) {
-
+    
+    var div_tabl = $("<div/>");
     var table = $('<table id="myTable"  border="1" align="center"/>');
-    $("#table-content").html(table);
+    $("#table-content").html(div_tabl);
 
     var tr = $("<tr/>");
     tr.append("<th>Name</th>");
@@ -59,15 +69,33 @@ function drowDepartments(respons) {
             }
         });
 
+        var newButton = $('<input />', {
+            type: 'button',
+            value: 'New Department',
+            id: 'btn_new',
+            on: {
+                click: function () {
+                    addEditDepartmentFunc();
+                }
+            }
+        });
+        
         var row = $("<tr/>");
         row.append("<td>" + respons[i].name + "</td>");
-        row.append("<td/>").append(deleteButton);
-        row.append("<td/>").append(editButton);
+        var td1 = $("<td/>");
+        td1.append(deleteButton);
+        row.append(td1);
+        var td2 = $("<td/>");        
+        td2.append(editButton);
+        row.append(td2);
         row.appendTo(table);
     }
+    div_tabl.append(table);
+    div_tabl.append(newButton);
 }
 
 function deleteDepartmentFunc(depID) {
+    alert(depID)
     $.ajax({
         type: "POST",
         url: "/delDepartment",
@@ -117,18 +145,19 @@ function drowDepartmentForm(department) {
     var th = $("<th/>");
     var input_text = $('<input />',
         {
+            id: "departm_name_input",
             type: 'text',
-            value: depName
+            value: depName,
         });
 
+    
     var addButton = $('<input />', {
         type: 'button',
         value: 'New',
         id: 'btn_add',
-        name: input_text.val(),
         on: {
             click: function () {
-                addEditModelDepartment(this.name, depID)
+                addEditModelDepartment(depID)
             }
         }
     });
@@ -140,27 +169,19 @@ function drowDepartmentForm(department) {
     table_div.append(addButton);
 }
 
-function addEditModelDepartment(depName, depID) {
+function addEditModelDepartment( depID) {
 
-    var department = {};
-    department[0] = depName;
-    department[1] = depID;
-
+    var depName = document.getElementById("departm_name_input").value;
+    var department = {"departmentid" : depID, "name" : depName};
+    
     $.ajax({
-        type: "POST",
+        type: "post",
         contentType: "application/json",
         url: "/saveDepartment",
-        data: {
-            department: department
-        },
-        dataType: 'json',
-        success: function (data) {
-            console.log("department: ", data);
-            drowDepartmentForm(data);
-        },
-        error: function (e) {
-            console.log("ERROR: ", "Not found");
-            drowDepartmentForm('');
+        data: JSON.stringify(department),
+        success: function () {
+            getDepartmentsFromModel();
+            console.log("result : add / edit success");
         }
     });
 }
