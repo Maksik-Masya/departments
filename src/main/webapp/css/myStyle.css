@@ -48,6 +48,14 @@
     height: 40px;
 }
 
+.error {
+    color: red;
+    /*color: #745353;*/
+    font-family: helvetica, serif;
+    font-size: 13px;
+    position: relative;
+    /*left: 10px;*/
+}
 .error-field {
     /*font-size: small;*/
     color: red;
@@ -55,8 +63,18 @@
     font-family: helvetica, serif;
     font-size: 13px;
     position: relative;
-    left: 150px;
-    bottom: 37px;
+    /*left: 1px;*/
+    /*bottom: 37px;*/
+}
+.info-field {
+    /*font-size: small;*/
+    /*color: darkslategray;*/
+    color: #725129;
+    font-family: helvetica, serif;
+    font-size: 13px;
+    position: relative;
+    /*left: 1px;*/
+    /*bottom: 37px;*/
 }
 
 .select-field {
@@ -107,6 +125,10 @@
     width: 350px;
 }
 
+.department-form {
+    padding-top: 20px;
+
+}
 .employee-table-form {
     border: 1px solid #f2e3d2;
     background: #c9b7a2;

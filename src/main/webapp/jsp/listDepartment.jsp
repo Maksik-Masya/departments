@@ -7,8 +7,16 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=EUC-KR">
     <link type="text/css" rel="stylesheet" href="/css/myStyle.css"/>
-    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-    <script type="text/javascript" src="/js/departments.js"></script>
+    <%--<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>--%>
+    <%--<script src="//ajax.aspnetcdn.com/ajax/jquery.validate/1.9/jquery.validate.min.js"></script>--%>
+    <%--<script src="//ajax.aspnetcdn.com/ajax/jquery.validate/1.9/jquery.validate.min.js"></script>--%>
+    <script src="//code.jquery.com/jquery-1.9.1.js"></script>
+    <script type="text/javascript" src="/js/jquery.validate.min.js"></script>
+    <script type="text/javascript" src="/js/models.js"></script>
+    <script type="text/javascript" src="/js/employeeForm.js"></script>
+    <script type="text/javascript" src="/js/employeeService.js"></script>
+    <script type="text/javascript" src="/js/departmentService.js"></script>
+    <script type="text/javascript" src="/js/departmentForm.js"></script>
     <title>All Departments</title>
 </head>
 <body>

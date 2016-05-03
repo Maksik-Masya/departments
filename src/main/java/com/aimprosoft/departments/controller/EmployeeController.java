@@ -7,6 +7,7 @@ import com.aimprosoft.departments.service.DepartmentService;
 import com.aimprosoft.departments.service.EmployeeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
+import org.springframework.format.datetime.DateFormatter;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
@@ -33,38 +34,36 @@ public class EmployeeController {
 
     @InitBinder
     public void initBinder(WebDataBinder binder) {
-        binder.setDisallowedFields("id");
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        binder.registerCustomEditor(Date.class, "dob", new CustomDateEditor(dateFormat, false));
-       // binder.addCustomFormatter(new CustomDateFormatter<Integer>());
-
+        binder.addCustomFormatter(new DateFormatter("yyyy-MM-dd"));
     }
 
-    @RequestMapping(value = "/listEmployee")
-    public ModelAndView listEmployees(@RequestParam(required = false) Integer departmentId) {
-        ModelAndView modelAndView = new ModelAndView("listEmployee");
+    @RequestMapping(value = "/listEmployee", method = RequestMethod.GET)
+    @ResponseBody
+    public List listEmployees(@RequestParam(required = false) Integer departmentId) {
         Department department = departmentService.getDepartmentById(departmentId);
-        String department_name = department.getName();
-        List employeeList = employeeService.getEmployeeByDepartmentId(department);
-
-        modelAndView.addObject("id_department", departmentId);
-        modelAndView.addObject("employees", employeeList);
-        modelAndView.addObject("department_name", department_name);
-        modelAndView.addObject("departmentId", departmentId);
-        return modelAndView;
+        return employeeService.getEmployeeByDepartmentId(department);
     }
 
+    //    @RequestMapping(value = "/addEditEmployee")
+//    public ModelAndView addOrEditEmployee(@RequestParam(required = false) Integer id,
+//                                          @RequestParam(required = false) Integer id_department) {
+//        ModelAndView modelAndView = new ModelAndView("employee");
+//        if (id != null) {
+//            Employee employee = employeeService.getEmployeeById(id);
+//            modelAndView.addObject("employee", employee);
+//            modelAndView.addObject("id_department", id_department);
+//        }
+//        modelAndView.addObject("departments", departmentService.getAllDepartments());
+//        return modelAndView;
+//    }
     @RequestMapping(value = "/addEditEmployee")
-    public ModelAndView addOrEditEmployee(@RequestParam(required = false) Integer id,
-                                          @RequestParam(required = false) Integer id_department) {
-        ModelAndView modelAndView = new ModelAndView("employee");
+    @ResponseBody
+    public Employee addOrEditEmployee(@RequestParam(required = false) Integer id) {
+        Employee employee = null;
         if (id != null) {
-            Employee employee = employeeService.getEmployeeById(id);
-            modelAndView.addObject("employee", employee);
-            modelAndView.addObject("id_department", id_department);
+            employee = employeeService.getEmployeeById(id);
         }
-        modelAndView.addObject("departments", departmentService.getAllDepartments());
-        return modelAndView;
+        return employee;
     }
 
     @RequestMapping(value = "/saveEmployee", method = RequestMethod.POST)
@@ -74,9 +73,9 @@ public class EmployeeController {
 
         ModelAndView modelAndView = new ModelAndView("redirect:/listEmployee");
 
-        if(result.hasErrors()) {
+        if (result.hasErrors()) {
             modelAndView.setViewName("employee");
-            return  modelAndView;
+            return modelAndView;
         }
 
         if (id != null) {
@@ -99,13 +98,25 @@ public class EmployeeController {
         }
     }
 
-    @RequestMapping(value = "/delEmployee")
-    public ModelAndView deleteEmployee(@RequestParam(required = false) Integer id,
-                                       @RequestParam(required = false) Integer id_department) {
-        ModelAndView modelAndView = new ModelAndView("redirect:/listEmployee");
+//    @RequestMapping(value = "/delEmployee", method = RequestMethod.POST)
+//    @ResponseBody
+//    public ModelAndView deleteEmployee(@RequestParam Integer id,
+//                                       @RequestParam(required = false) Integer id_department) {
+//        ModelAndView modelAndView = new ModelAndView("redirect:/listEmployee");
+//        Employee employee = employeeService.getEmployeeById(id);
+//        employeeService.deleteEmployee(employee);
+//        modelAndView.addObject("departmentId", id_department);
+//        return modelAndView;
+//    }
+
+    @RequestMapping(value = "/delEmployee", method = RequestMethod.POST)
+    @ResponseBody
+    public Employee deleteEmployee(@RequestParam Integer id) {
+//        ModelAndView modelAndView = new ModelAndView("redirect:/listEmployee");
         Employee employee = employeeService.getEmployeeById(id);
         employeeService.deleteEmployee(employee);
-        modelAndView.addObject("departmentId", id_department);
-        return modelAndView;
+//        modelAndView.addObject("departmentId", id_department);
+//        return modelAndView;
+        return employee;
     }
 }

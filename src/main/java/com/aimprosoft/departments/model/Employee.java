@@ -59,8 +59,6 @@ public class Employee {
     @JoinColumn(name="id_department")
     private Department department;
 
-    private int id_dep;
-
     public Department getDepartment() {
         return department;
     }
@@ -108,14 +106,6 @@ public class Employee {
 
     public void setEmail(String email) {
         this.email = email;
-    }
-
-    public int getId_dep() {
-        return id_dep;
-    }
-
-    public void setId_dep(int id_department) {
-        this.id_dep = id_department;
     }
 
     public int getSalary() {
