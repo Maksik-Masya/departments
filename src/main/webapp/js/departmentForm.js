@@ -59,7 +59,7 @@ function DepartmentForm() {
                     click: function () {
                         service.isExist(this.name).then(function (data) {
                             form.drowDepartmentForm(data);
-                            $('#myform').validate(validatedRules);
+                            $('#departmentFormForValid').validate(validatedRules);
                         }, function () {
                             form.drowDepartmentForm('');
                         });
@@ -74,10 +74,11 @@ function DepartmentForm() {
                 name: respons[i].departmentid,
                 on: {
                     click: function () {
-                        employeeService.getAll(this.name).then(function (data) {
-                            employeeForm.drowList(data);
+                        var idDep = this.name;
+                        employeeService.getAll(idDep).then(function (data) {
+                            employeeForm.drowList(data, idDep);
                         }, function () {
-                            employeeForm.drowList('');
+                            employeeForm.drowList('', idDep);
                         });
                     }
                 }
@@ -99,12 +100,12 @@ function DepartmentForm() {
 
         var newButton = $('<input />', {
             type: 'button',
-            value: 'New Department',
+            value: 'Create',
             id: 'btn_new',
             on: {
                 click: function () {
                     form.drowDepartmentForm('');
-                    $('#myform').validate(validatedRules);
+                    $('#departmentFormForValid').validate(validatedRules);
                 }
             }
         });
@@ -116,7 +117,7 @@ function DepartmentForm() {
         var depID = dep.departmentid;
         var depName = dep.name;
 
-        var divForm = $("<form id='myform' class='department-form'/>");
+        var divForm = $("<form id='departmentFormForValid' class='department-form'/>");
         var divField = $("<div class='form-field'/>");
         var label = $("<label for='name' class='tittle-field'>Department Name</label>");
         var spanName = $("<span class='error'/>");
@@ -129,32 +130,48 @@ function DepartmentForm() {
                 value: depName,
                 on: {
                     input: function () {
-                        $('#myform').valid();
+                        $('#departmentFormForValid').valid();
                         spanName.text('');
                     }
                 }
             });
 
-        var addButton = $('<input />', {
+        var saveButton = $('<input />', {
             class: "submit-button",
             type: 'button',
             value: 'Save',
             id: 'btn_add',
             on: {
                 click: function () {
-                    depName = document.getElementById("departm_name_input").value;
-                    var departmentObj = {"departmentid": depID, "name": depName};
-                    service.save(departmentObj).then(function (resp) {
-                        if (resp.status == "SUCCESS") {
-                            spanName.text('');
-                            service.getAll().then(function (data) {
-                                form.drowListDepartments(data);
-                            });
-                        }
-                        else {
-                            spanName.text(resp.result.name);
-                        }
-                    })
+                    if ($('#departmentFormForValid').valid()) {
+                        depName = document.getElementById("departm_name_input").value;
+                        var departmentObj = {"departmentid": depID, "name": depName};
+                        service.save(departmentObj).then(function (resp) {
+                            if (resp.status == "SUCCESS") {
+                                spanName.text('');
+                                service.getAll().then(function (data) {
+                                    form.drowListDepartments(data);
+                                });
+                            }
+                            else {
+                                spanName.text(resp.result.name);
+                            }
+                        })
+                    }
+                }
+            }
+        });
+
+        var cancelButton = $('<input />', {
+            class: "cancel-button",
+            type: 'button',
+            value: 'Cancel',
+            id: 'btn_cancel',
+            on: {
+                click: function () {
+                    service.getAll().then(function (data) {
+                        form.drowListDepartments(data);
+                    });
                 }
             }
         });
@@ -164,7 +181,8 @@ function DepartmentForm() {
         divForm.append(divField);
         divField.append(inputName);
         divField.append(spanName);
-        divForm.append(addButton);
+        divForm.append(saveButton);
+        divForm.append(cancelButton);
     };
 }
 

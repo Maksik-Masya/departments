@@ -13,10 +13,12 @@ function EmployeeForm() {
                 maxlength: 20
             },
             DOBInput: {
-                required: true
+                required: true,
+                date: true
             },
             SalaryInput: {
-                required: true
+                required: true,
+                number: true
             },
             EmailInput: {
                 required: true,
@@ -34,7 +36,8 @@ function EmployeeForm() {
                 required: "This is required field"
             },
             SalaryInput: {
-                required: "This is required field"
+                required: "This is required field",
+                number: "Must be numerical"
             },
             EmailInput: {
                 required: "This is required field",
@@ -46,7 +49,7 @@ function EmployeeForm() {
         }
     };
 
-    EmployeeForm.prototype.drowList = function (respons) {
+    EmployeeForm.prototype.drowList = function (respons, idDepartment) {
 
         var content = $("#table-content");
         content.removeClass("department-table-form");
@@ -94,8 +97,8 @@ function EmployeeForm() {
                 on: {
                     click: function () {
                         employeeService.isExist(this.name).then(function (data) {
-                            employeeForm.drowEmployeeForm(data);
-                            $('#myform').validate(validatedRules);
+                            employeeForm.drowEmployeeForm(data, idDepartment);
+                            $('#employeeFormForValid').validate(validatedRules);
                         }, function () {
                             console.log("employee is not exist");
                             employeeForm.drowEmployeeForm('');
@@ -104,10 +107,11 @@ function EmployeeForm() {
                 }
             });
 
+            var birthdayVar = new Date(respons[i].dob);
             var row = $("<tr/>");
             row.append("<td>" + respons[i].firstName + "</td>");
             row.append("<td>" + respons[i].lastName + "</td>");
-            row.append("<td>" + respons[i].dob + "</td>");
+            row.append("<td>" + birthdayVar.getFullYear() + "-" + (birthdayVar.getMonth() + 1) + "-" + birthdayVar.getDate() + "</td>");
             row.append("<td>" + respons[i].salary + "</td>");
             row.append("<td>" + respons[i].email + "</td>");
             var td1 = $("<td align='center'/>");
@@ -119,10 +123,11 @@ function EmployeeForm() {
             row.appendTo(table);
         }
 
-        var newButton = $('<input />', {
+        var listDepButton = $('<input />', {
+            class: 'listDepButtonCSS',
             type: 'button',
             value: 'Departments',
-            id: 'btn_new',
+            id: 'btn_list',
             on: {
                 click: function () {
                     service.getAll().then(function (data) {
@@ -133,15 +138,29 @@ function EmployeeForm() {
                 }
             }
         });
+
+        var newEmplButton = $('<input />', {
+            class : 'listDepButtonCSS',
+            type: 'button',
+            value: 'Create',
+            id: 'btn_new',
+            on: {
+                click: function () {
+                    employeeForm.drowEmployeeForm('', idDepartment);
+                    $('#employeeFormForValid').validate(validatedRules);
+                }
+            }
+        });
         divTable.append(table);
-        divTable.append(newButton);
+        divTable.append(listDepButton);
+        divTable.append(newEmplButton);
     };
 
-    EmployeeForm.prototype.drowEmployeeForm = function (employee) {
+    EmployeeForm.prototype.drowEmployeeForm = function (employee, idDepartment) {
         var content = $("#table-content");
         content.addClass("department-table-form");
         content.removeClass("employee-table-form");
-        var divForm = $("<form id='myform' class='department-form'/>");
+        var divForm = $("<form id='employeeFormForValid' class='department-form'/>");
 
         //firstName---------------------------------------------------------
         var divFirstName = $("<div class='form-field'/>");
@@ -183,13 +202,19 @@ function EmployeeForm() {
         var divDOB = $("<div class='form-field'/>");
         var labelDOB = $("<label for='name' class='tittle-field'>Birthday</label>");
         var spanDOB = $("<span class='error'/>");
-        var inputDOB = $("<input/>",
+        var emplDOB = '';
+        if(employee != '') {
+            var birthdayVar = new Date(employee.dob);
+            emplDOB = birthdayVar.getFullYear() + "-" + (birthdayVar.getMonth() + 1) + "-" + birthdayVar.getDate();
+        }
+        var inputDOB = $("<input />",
             {
                 class: "input-field",
                 id: "DOBInput",
                 name: "DOBInput",
                 type: 'text',
-                value: employee.dob,
+                placeholder: 'yyyy-MM-dd',
+                value: emplDOB,
                 on: {
                     input: function () {
                         $('#DOBInput').valid();
@@ -237,59 +262,90 @@ function EmployeeForm() {
         var divDepartment = $("<div class='form-field'/>");
         var labelDepartment = $("<label for='name' class='tittle-field'>Department</label>");
         var spanDepartment = $("<span class='error'/>");
-        var selectDepartment = $("<select class='select-field'/>",
+        var selectDepartment = $("<select class='select-field' id='DepartmentInput' />",
             {
                 class: "input-field",
-                id: "DepartmentInput",
                 name: "DepartmentInput"
             });
 
         for (var i in globalListDep) {
             var option;
-            if (globalListDep[i].name == employee.department.name) {
+            if (globalListDep[i].departmentid == idDepartment) {
                 option = $("<option value='" + globalListDep[i].departmentid + "' selected>" +
                     globalListDep[i].name + "</option>");
             }
             else {
-                option = $("<option>" + globalListDep[i].name + "</option>");
+                option = $("<option value='" + globalListDep[i].departmentid + "'>" + globalListDep[i].name + "</option>");
             }
             selectDepartment.append(option);
         }
 
-        var addButton = $('<input />', {
+        var saveButton = $('<input />', {
             class: "submit-button",
             type: 'button',
             value: 'Save',
             id: 'btn_add',
             on: {
                 click: function () {
-                    var name = document.getElementById("FirstNameInput").value;
-                    var lName = document.getElementById("LastNameInput").value;
-                    var dob = document.getElementById("DOBInput").value;
-                    var salary = document.getElementById("SalaryInput").value;
-                    var email = document.getElementById("EmailInput").value;
-                    var id_dep = document.getElementById("DepartmentInput").value;
+                    if ($('#employeeFormForValid').valid()) {
+                        var name = document.getElementById("FirstNameInput").value;
+                        var lName = document.getElementById("LastNameInput").value;
+                        var dob = document.getElementById("DOBInput").value;
+                        var salary = document.getElementById("SalaryInput").value;
+                        var email = document.getElementById("EmailInput").value;
+                        var depID = document.getElementById("DepartmentInput");
+                        var depOpt = depID.options[depID.selectedIndex];
 
-                    var employeeObj = {
-                        "id": employee.id,
-                        "firstName": name,
-                        "lastName": lName,
-                        "dob": dob,
-                        "salary": salary,
-                        "email": email,
-                        "id_department": id_dep
-                    };
-                    employeeService.save(employeeObj).then(function (resp) {
-                        if (resp.status == "SUCCESS") {
-                            spanFirstName.text('');
-                            service.getAll().then(function (data) {
-                                form.drowListDepartments(data);
-                            });
-                        }
-                        else {
-                            spanFirstName.text(resp.result.name);
-                        }
-                    })
+                        //correct date format for DB
+                        dob = dob.replace(/\//g, "-");
+                        dob = dob.replace(/\./g, "-");
+
+                        var employeeObj = {
+                            "id": employee.id,
+                            "firstName": name,
+                            "lastName": lName,
+                            "dob": dob,
+                            "salary": salary,
+                            "email": email,
+                            "department": {
+                                "name": depOpt.text,
+                                "departmentid": depOpt.value
+                            }
+                        };
+
+                        employeeService.save(employeeObj).then(function (resp) {
+                            if (resp.status == "SUCCESS") {
+                                spanFirstName.text('');
+                                employeeService.getAll(depOpt.value).then(function (data) {
+                                    employeeForm.drowList(data);
+                                }, function () {
+                                    employeeForm.drowList('');
+                                });
+                            }
+                            else {
+                                var result = resp.result;
+                                if (result.email != undefined) {
+                                    spanEmail.text(result.email);
+                                }
+                            }
+                        })
+                    }
+                }
+            }
+        });
+
+        var cancelButton = $('<input />', {
+            class: "cancel-button",
+            type: 'button',
+            value: 'Cancel',
+            id: 'btn_cancelkkj',
+            on: {
+                click: function () {
+                    employeeService.getAll(idDepartment).then(function (data) {
+                        employeeForm.drowList(data);
+                    }, function () {
+                        employeeForm.drowList('');
+                    });
                 }
             }
         });
@@ -325,6 +381,66 @@ function EmployeeForm() {
         divDepartment.append(selectDepartment);
         divDepartment.append(spanDepartment);
 
-        divForm.append(addButton);
+        divForm.append(saveButton);
+        divForm.append(cancelButton);
     };
 }
+
+
+
+
+var EventSupport = Class.extend({
+    subscribe: function(event, handler, context) {
+        $(this).on(event, $.proxy(handler, context));
+    },
+
+    fire: function(event, data) {
+        $(this).trigger(event, data);
+    }
+});
+
+var Dialog = EventSupport.extend({
+    init: function(config) {
+        // {container: obj, fields: [{label: '', type: '', renderFunction: func}]}
+        this.config = config;
+    },
+
+    render: function() {
+        if (!this.isRendered) {
+            var div = this.div = $('<div/>').appendTo(this.config.container);
+
+            this.fire('start-rendering', {dialog: this, div: div});
+
+            this.config.fields.forEach($.proxy(function(i) {
+                var element = $('<div/>')
+                    .appendTo(div)
+                    .append($('<label/>').text(i.label))
+                    .append($('<input/>'));
+
+                this.fire('element-render', {dialog: this, div: div, element: element});
+            }, this));
+
+            this.fire('stop-rendering', {dialog: this, div: div});
+
+            this.isRendered = true;
+        }
+    }
+
+});
+
+var DepartmentDialog = Dialog.extend({
+    init: function() {
+        this._super({container: $('body'), fields: [{label:'xaxa'}, {label:'xoxo'}]});
+
+        this.subscribe('stop-rendering', this.onStopRender, this);
+    },
+
+    onStopRender: function() {
+        console.log('STOP');
+    }
+});
+
+new Dialog   (    { container: $('body'), fields: [{label:'xaxa'}, {label:'xoxo'}]    } ) . render();
+
+
+

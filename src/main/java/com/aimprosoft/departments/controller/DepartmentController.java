@@ -5,14 +5,9 @@ import com.aimprosoft.departments.model.Department;
 import com.aimprosoft.departments.service.DepartmentService;
 import com.aimprosoft.departments.utils.JsonResponse;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.List;
 import java.util.Map;
@@ -29,7 +24,7 @@ public class DepartmentController {
 
     @RequestMapping(value = "/", method = RequestMethod.GET)
     public ModelAndView departmentList() {
-        ModelAndView modelAndView = new ModelAndView("listDepartment");
+        ModelAndView modelAndView = new ModelAndView("index");
         List<Department> departmentList = departmentService.getAllDepartments();
         modelAndView.addObject("departments", departmentList);
         return modelAndView;
@@ -51,14 +46,14 @@ public class DepartmentController {
         JsonResponse jsonResponse = new JsonResponse();
         try {
             departmentService.addOrUpdateDepartment(department);
+            jsonResponse.setStatus("SUCCESS");
+            return jsonResponse;
         } catch (NotValidValueException e) {
             Map<String, String> errors = e.getErrorMap();
             jsonResponse.setStatus("FAIL");
             jsonResponse.setResult(errors);
             return jsonResponse;
         }
-        jsonResponse.setStatus("SUCCESS");
-        return jsonResponse;
     }
 
     @RequestMapping(value = "/delDepartment", method = RequestMethod.POST)

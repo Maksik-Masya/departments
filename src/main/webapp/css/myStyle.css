@@ -30,6 +30,23 @@
     vertical-align: middle;
 }
 
+.cancel-button {
+    border: 1px solid #713805;
+    background: #9b5d00;
+    border-radius: 4px;
+    box-shadow: rgba(255, 255, 255, 0.4) 0 1px 0, inset rgba(255, 255, 255, 0.4) 0 1px 0;
+    color: #540012;
+    font-family: helvetica, serif;
+    padding: 8.5px 18px;
+    font-size: 14px;
+    text-decoration: none;
+    vertical-align: middle;
+    float: right;
+}
+.cancel-button:hover {
+    color: #fff;
+}
+
 .input-field {
     border: 1px solid #c9b7a2;
     background: #e4d5c3;
@@ -166,8 +183,12 @@
 
 .my-link {
     padding-right: 20px;
-    margin-bottom: 20px;
-    font-size: 14px;
+    /*margin-bottom: 20px;*/
+    /*font-size: 14px;*/
+}
+
+.listDepButtonCSS{
+    margin-right: 20px;
 }
 
 #department-tittle{

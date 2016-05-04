@@ -28,5 +28,14 @@ function EmployeeService() {
             dataType: 'json'
         });
     };
+
+    EmployeeService.prototype.save = function (employeeObj) {
+        return $.ajax({
+            type: "post",
+            contentType: "application/json",
+            url: "/saveEmployee",
+            data: JSON.stringify(employeeObj)
+        });
+    };
     
 }

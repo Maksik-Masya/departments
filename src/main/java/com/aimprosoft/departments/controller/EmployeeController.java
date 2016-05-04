@@ -5,18 +5,15 @@ import com.aimprosoft.departments.model.Department;
 import com.aimprosoft.departments.model.Employee;
 import com.aimprosoft.departments.service.DepartmentService;
 import com.aimprosoft.departments.service.EmployeeService;
+import com.aimprosoft.departments.utils.JsonResponse;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.format.datetime.DateFormatter;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -41,7 +38,8 @@ public class EmployeeController {
     @ResponseBody
     public List listEmployees(@RequestParam(required = false) Integer departmentId) {
         Department department = departmentService.getDepartmentById(departmentId);
-        return employeeService.getEmployeeByDepartmentId(department);
+        List employees = employeeService.getEmployeeByDepartmentId(department);
+        return employees;
     }
 
     //    @RequestMapping(value = "/addEditEmployee")
@@ -67,34 +65,18 @@ public class EmployeeController {
     }
 
     @RequestMapping(value = "/saveEmployee", method = RequestMethod.POST)
-    public ModelAndView saveEmployee(@RequestParam(required = false) Integer id,
-                                     @RequestParam(required = false) Integer id_department,
-                                     Employee employee, BindingResult result) {
-
-        ModelAndView modelAndView = new ModelAndView("redirect:/listEmployee");
-
-        if (result.hasErrors()) {
-            modelAndView.setViewName("employee");
-            return modelAndView;
-        }
-
-        if (id != null) {
-            employee.setId(id);
-        }
+    @ResponseBody
+    public JsonResponse saveEmployee(@RequestBody Employee employee, BindingResult bindingResult) {
+        JsonResponse jsonResponse = new JsonResponse();
         try {
-            modelAndView.addObject("department_name", departmentService.getDepartmentById(id_department).getName());
-            modelAndView.addObject("departments", departmentService.getAllDepartments());
-            modelAndView.addObject("departmentId", id_department);
-            Department department = departmentService.getDepartmentById(id_department);
-            employee.setDepartment(department);
             employeeService.addOrUpdateEmployee(employee);
-            return modelAndView;
+            jsonResponse.setStatus("SUCCESS");
+            return jsonResponse;
         } catch (NotValidValueException e) {
             Map<String, String> errors = e.getErrorMap();
-            modelAndView.addObject("errors", errors);
-            modelAndView.addObject("employee", employee);
-            modelAndView.setViewName("employee");
-            return modelAndView;
+            jsonResponse.setStatus("FAIL");
+            jsonResponse.setResult(errors);
+            return jsonResponse;
         }
     }
 
