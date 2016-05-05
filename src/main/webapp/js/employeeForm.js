@@ -140,7 +140,7 @@ function EmployeeForm() {
         });
 
         var newEmplButton = $('<input />', {
-            class : 'listDepButtonCSS',
+            class: 'listDepButtonCSS',
             type: 'button',
             value: 'Create',
             id: 'btn_new',
@@ -203,7 +203,7 @@ function EmployeeForm() {
         var labelDOB = $("<label for='name' class='tittle-field'>Birthday</label>");
         var spanDOB = $("<span class='error'/>");
         var emplDOB = '';
-        if(employee != '') {
+        if (employee != '') {
             var birthdayVar = new Date(employee.dob);
             emplDOB = birthdayVar.getFullYear() + "-" + (birthdayVar.getMonth() + 1) + "-" + birthdayVar.getDate();
         }
@@ -288,6 +288,7 @@ function EmployeeForm() {
             on: {
                 click: function () {
                     if ($('#employeeFormForValid').valid()) {
+
                         var name = document.getElementById("FirstNameInput").value;
                         var lName = document.getElementById("LastNameInput").value;
                         var dob = document.getElementById("DOBInput").value;
@@ -386,61 +387,172 @@ function EmployeeForm() {
     };
 }
 
+//----------------------------------------------------------------------------------------------------------------------
 
+var TextType = Class.extend({
+    init: function (text) {
+        this.text = text;
+    },
 
+    createElement: function () {
+        var input = $('<input/>');
+
+        if (this.text) {
+            input.val(this.text);
+        }
+
+        //input.addClass('input-field');
+        return input;
+    }
+});
+
+var DateType = TextType.extend({
+    createElement: function () {
+        var input = this._super();
+
+        input.attr('placeholder', 'dd/MM/yyyy');
+
+        return input;
+    }
+});
+
+var FixedSelectType = TextType.extend({
+    init: function (elements) {
+        this.elements = elements;
+    },
+
+    createElement: function () {
+        var select = $('<select/>');
+
+        this.elements.forEach(function (el) {
+            $('<option/>')
+                .text(el)
+                .val(el)
+                .appendTo(select);
+        });
+
+        return select;
+    }
+});
+
+var AjaxSelectType = FixedSelectType.extend({
+    init: function (url) {
+        this._super([]);
+
+        this.url = url;
+    },
+
+    createElement: function () {
+        this.select = this._super();
+
+        $.ajax({
+            url: url,
+            success: $.proxy(this.processResponse, this)
+        });
+        return this.select;
+    },
+
+    processResponse: function (response) {
+
+        response.forEach(proxy(function () {
+            $('<option/>')
+                .text(el)
+                .val(el)
+                .appendTo(this.select);
+        }, this));
+    }
+});
+
+var proxy = function (fn, context) {
+    return function () {
+        fn.call(context);
+    }
+};
+
+var DepartmentSelectType = FixedSelectType.extend({
+    processResponse: function (response) {
+        response.forEach(function () {
+            $('<option/>')
+                .text(el.id)
+                .val(el.sdfsdf)
+                .appendTo(this.select);
+        });
+    }
+});
 
 var EventSupport = Class.extend({
-    subscribe: function(event, handler, context) {
+    subscribe: function (event, handler, context) {
         $(this).on(event, $.proxy(handler, context));
     },
 
-    fire: function(event, data) {
+    fire: function (event, data) {
         $(this).trigger(event, data);
     }
 });
 
 var Dialog = EventSupport.extend({
-    init: function(config) {
+    init: function (config) {
         // {container: obj, fields: [{label: '', type: '', renderFunction: func}]}
         this.config = config;
     },
 
-    render: function() {
+    render: function () {
         if (!this.isRendered) {
             var div = this.div = $('<div/>').appendTo(this.config.container);
 
             this.fire('start-rendering', {dialog: this, div: div});
 
-            this.config.fields.forEach($.proxy(function(i) {
+            this.config.fields.forEach($.proxy(function (i) {
+                var el = i.type.createElement();
+
+                el.data('name', i.label);
+
+                var label = $('<label/>').text(i.label);
+                label.addClass('tittle-field');
+
                 var element = $('<div/>')
                     .appendTo(div)
-                    .append($('<label/>').text(i.label))
-                    .append($('<input/>'));
+                    .append(label)
+                    .append(el);
 
                 this.fire('element-render', {dialog: this, div: div, element: element});
             }, this));
 
             this.fire('stop-rendering', {dialog: this, div: div});
-
             this.isRendered = true;
         }
-    }
+    },
 
+    getData: function () {
+        var data = {};
+        this.div.find('input, select').each(function () {
+            var element = $(this);
+            var text = element.val();
+            var name = element.data('name');
+            data[name] = text;
+        });
+        return data;
+    }
 });
 
 var DepartmentDialog = Dialog.extend({
-    init: function() {
-        this._super({container: $('body'), fields: [{label:'xaxa'}, {label:'xoxo'}]});
+    init: function () {
+        this._super({
+            container: $('body'), fields: [
+                {label: 'xaxa', type: new TextType('text')},
+                {label: 'xoxo', type: new DateType('')},
+                {label: 'xixi', type: new FixedSelectType(['a', 'b', 'c'])}
+            ]
+        });
 
         this.subscribe('stop-rendering', this.onStopRender, this);
     },
 
-    onStopRender: function() {
+    onStopRender: function () {
         console.log('STOP');
     }
 });
 
-new Dialog   (    { container: $('body'), fields: [{label:'xaxa'}, {label:'xoxo'}]    } ) . render();
 
 
 
