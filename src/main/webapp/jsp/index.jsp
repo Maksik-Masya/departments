@@ -11,6 +11,7 @@
     <script type="text/javascript" src="/js/jquery.validate.min.js"></script>
     <script type="text/javascript" src="/js/class.js"></script>
     <script type="text/javascript" src="/js/models.js"></script>
+    <script type="text/javascript" src="/js/buttons.js"></script>
     <script type="text/javascript" src="/js/employeeForm.js"></script>
     <script type="text/javascript" src="/js/employeeService.js"></script>
     <script type="text/javascript" src="/js/departmentService.js"></script>

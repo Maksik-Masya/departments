@@ -1,3 +1,9 @@
+
+//var EmployeeService = Class.extend({
+
+
+
+
 function EmployeeService() {
 
     EmployeeService.prototype.getAll = function (depID) {

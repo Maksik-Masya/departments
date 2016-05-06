@@ -1,81 +1,83 @@
 var Table = Class.extend({
 
     init: function (config) {
-        // {container: obj, fields: [{label: '', type: '', renderFunction: func}]}
         this.config = config;
     },
 
     render: function () {
         if (!this.isRendered) {
 
-            var div = this.div = $('<table border="1"/>').appendTo(this.config.container);
+
+            var div = this.div = $('<table id="wwww" border="1"/>').appendTo(this.config.container);
 
             var trNameColumn = $('<tr/>').appendTo(div);
             this.config.columnsName.forEach($.proxy(function (i) {
                 trNameColumn.append("<th>" + i.name + "</th>");
             }, this));
+            trNameColumn.append("<th colspan='" + this.config.amountControlButtons + "'>Actions</th>");
 
             var rows = this.config.rows;
+            console.log(rows);
             for (var data in rows) {
 
                 var object = rows[data];
                 var tr = $('<tr/>').appendTo(div);
 
                 for (var field in object) {
-                    tr.append("<td>" + object[field] + "</td>");
+                    if (field === 'buttons') {
+                        var buttons = object[field];
+                        for (var btn1 in buttons) {
+
+                            var rr = buttons[btn1];
+                            for (var btn2 in rr) {
+                                var btn = rr[btn2].createElement();
+                                var td = $('<td/>');
+                                td.append(btn);
+                                tr.append(td);
+                            }
+                        }
+                    }
+                    else {
+                        tr.append("<td>" + object[field] + "</td>");
+                    }
                 }
 
-                this.config.buttons.forEach(function (i) {
-                    var btn = i.button.createElement();
-                    tr.append(btn);
-                });
-
-                this.isRendered = true;
-            }
+            }this.isRendered = true;
         }
     }
 });
 
 var DepartmentTable = Table.extend({
 
-    init: function (listDepartments) {
+    init: function () {
+        var dep = [];
 
-        this.listDep = listDepartments;
-        console.log("log", this.listDep);
+        var departmentService = new DepartmentService();
+
+        console.log("in init");
+        departmentService.getAll().then(function (data) {
+            for (var i in data) {
+                dep.push({
+                    name: data[i].name,
+                    buttons: [
+                        {button1: new ButtonDeleteDepartment(data[i].departmentid)},
+                        {button1: new ButtonListEmployee(data[i].departmentid)}
+                    ]
+                });
+            }
+        }, function () {
+           console.log("error")
+        });
 
         this._super({
             container: $('.department-table-form'),
-
+            amountControlButtons: 2,
             columnsName: [
                 {name: 'Name'}
             ],
-            rows: this.listDep,
-            buttons: [
-                {button: new ButtonType('cancel')},
-                {button: new ButtonType('save')}
-            ]
+            rows: dep
         });
     }
-});
-
-var ButtonType = Class.extend({
-    init: function (text) {
-        this.text = text;
-    },
-
-    createElement: function () {
-        var btn = $('<input/>', {
-            type: 'button'
-        });
-
-        if (this.text) {
-            btn.val(this.text);
-        }
-
-        //input.addClass('input-field');
-        return btn;
-    }
-
 });
 
 
