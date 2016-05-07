@@ -32,6 +32,32 @@ var ButtonListEmployee = ButtonType.extend({
                     (new EmployeeService()).getAll(idDep).then(function (data) {
 
 
+                    }, function () {
+                        console.log("employees isn't exist");
+                    });
+                }
+            }
+        });
+        return btn;
+    }
+});
+
+var ButtonEditDepartment = ButtonType.extend({
+    init: function (id) {
+        this.idDep = id;
+    },
+    createElement: function () {
+        var btn = $('<input/>', {
+            type: 'button',
+            value: 'Employees',
+            name: this.idDep,
+            on: {
+                click: function () {
+
+                    var idDep = this.name;
+
+                    (new EmployeeService()).getAll(idDep).then(function (data) {
+
 
                     }, function () {
                         console.log("employees isn't exist");
@@ -54,10 +80,16 @@ var ButtonDeleteDepartment = ButtonType.extend({
             name: this.idDep,
             on: {
                 click: function () {
-                    new DepartmentService().delete(this.name).then(function (data) {
-                        //$('#wwww').remove();
-                        var dep = new DepartmentTable();
-                        dep.render();
+                    var departmentService = new DepartmentService();
+                    departmentService.delete(this.name).then(function (data) {
+                        $('#wwww').remove();
+                        console.log("department is deleted");
+                        departmentService.getAll().then(function (data) {
+                            var dep = new DepartmentTable(data);
+                            dep.render();
+                        });
+
+                        
                     }, function () {
                         console.log("department is not exist");
                     });

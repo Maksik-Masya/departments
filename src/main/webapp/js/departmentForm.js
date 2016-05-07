@@ -6,8 +6,6 @@ var Table = Class.extend({
 
     render: function () {
         if (!this.isRendered) {
-
-
             var div = this.div = $('<table id="wwww" border="1"/>').appendTo(this.config.container);
 
             var trNameColumn = $('<tr/>').appendTo(div);
@@ -17,7 +15,7 @@ var Table = Class.extend({
             trNameColumn.append("<th colspan='" + this.config.amountControlButtons + "'>Actions</th>");
 
             var rows = this.config.rows;
-            console.log(rows);
+            console.log("in tbale render. my rows : ", rows);
             for (var data in rows) {
 
                 var object = rows[data];
@@ -42,36 +40,33 @@ var Table = Class.extend({
                     }
                 }
 
-            }this.isRendered = true;
+            }
+            this.isRendered = true;
         }
     }
 });
 
 var DepartmentTable = Table.extend({
 
-    init: function () {
+    init: function (data) {
+
         var dep = [];
+        for (var i in data) {
+            dep.push({
+                name: data[i].name,
+                buttons: [
+                    {button: new ButtonDeleteDepartment(data[i].departmentid)},
+                    {button: new ButtonEditDepartment(data[i].departmentid)},
+                    {button: new ButtonListEmployee(data[i].departmentid)}
+                ]
+            });
+        }
 
-        var departmentService = new DepartmentService();
-
-        console.log("in init");
-        departmentService.getAll().then(function (data) {
-            for (var i in data) {
-                dep.push({
-                    name: data[i].name,
-                    buttons: [
-                        {button1: new ButtonDeleteDepartment(data[i].departmentid)},
-                        {button1: new ButtonListEmployee(data[i].departmentid)}
-                    ]
-                });
-            }
-        }, function () {
-           console.log("error")
-        });
-
+        
+        
         this._super({
-            container: $('.department-table-form'),
-            amountControlButtons: 2,
+            container: $('#departmentDiv'),
+            amountControlButtons: 3,
             columnsName: [
                 {name: 'Name'}
             ],
@@ -79,7 +74,6 @@ var DepartmentTable = Table.extend({
         });
     }
 });
-
 
 /*
  function DepartmentForm() {

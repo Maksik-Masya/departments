@@ -16,6 +16,7 @@
     <script type="text/javascript" src="/js/employeeService.js"></script>
     <script type="text/javascript" src="/js/departmentService.js"></script>
     <script type="text/javascript" src="/js/departmentForm.js"></script>
+    <script type="text/javascript" src="/js/start.js"></script>
     <title>All Departments</title>
 </head>
 <body>
