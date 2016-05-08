@@ -5,51 +5,55 @@ var Table = Class.extend({
     },
 
     render: function () {
-        if (!this.isRendered) {
-            var div = this.div = $('<table id="wwww" border="1"/>').appendTo(this.config.container);
+        // if (!this.isRendered) {
+        var div = this.div = $('<table id="wwww" border="1"/>').appendTo(this.config.container);
 
-            var trNameColumn = $('<tr/>').appendTo(div);
-            this.config.columnsName.forEach($.proxy(function (i) {
-                trNameColumn.append("<th>" + i.name + "</th>");
-            }, this));
-            trNameColumn.append("<th colspan='" + this.config.amountControlButtons + "'>Actions</th>");
+        
 
-            var rows = this.config.rows;
-            console.log("in tbale render. my rows : ", rows);
-            for (var data in rows) {
+        var trNameColumn = $('<tr/>').appendTo(div);
+        this.config.columnsName.forEach($.proxy(function (i) {
+            trNameColumn.append("<th>" + i.name + "</th>");
+        }, this));
+        trNameColumn.append("<th colspan='" + this.config.amountControlButtons + "'>Actions</th>");
 
-                var object = rows[data];
-                var tr = $('<tr/>').appendTo(div);
+        var rows = this.config.rows;
+        for (var data in rows) {
 
-                for (var field in object) {
-                    if (field === 'buttons') {
-                        var buttons = object[field];
-                        for (var btn1 in buttons) {
+            var object = rows[data];
+            var tr = $('<tr/>').appendTo(div);
 
-                            var rr = buttons[btn1];
-                            for (var btn2 in rr) {
-                                var btn = rr[btn2].createElement();
-                                var td = $('<td/>');
-                                td.append(btn);
-                                tr.append(td);
-                            }
+            for (var field in object) {
+                if (field === 'buttons') {
+                    var buttons = object[field];
+                    for (var btn1 in buttons) {
+
+                        var rr = buttons[btn1];
+                        for (var btn2 in rr) {
+                            var btn = rr[btn2].createElement(this);
+                            var td = $('<td/>');
+                            td.append(btn);
+                            tr.append(td);
                         }
                     }
-                    else {
-                        tr.append("<td>" + object[field] + "</td>");
-                    }
                 }
-
+                else {
+                    tr.append("<td>" + object[field] + "</td>");
+                }
             }
-            this.isRendered = true;
+
         }
+        //`this.isRendered = true;
+        // }
+    },
+
+    deleteRow: function (row) {
+        document.getElementById('wwww').deleteRow(row);
     }
 });
 
 var DepartmentTable = Table.extend({
 
     init: function (data) {
-
         var dep = [];
         for (var i in data) {
             dep.push({
@@ -61,9 +65,6 @@ var DepartmentTable = Table.extend({
                 ]
             });
         }
-
-        
-        
         this._super({
             container: $('#departmentDiv'),
             amountControlButtons: 3,

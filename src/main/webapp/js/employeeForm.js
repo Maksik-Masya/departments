@@ -481,6 +481,7 @@ var DepartmentSelectType = FixedSelectType.extend({
 });
 
 var EventSupport = Class.extend({
+    
     subscribe: function (event, handler, context) {
         $(this).on(event, $.proxy(handler, context));
     },
@@ -518,7 +519,10 @@ var Dialog = EventSupport.extend({
                 this.fire('element-render', {dialog: this, div: div, element: element});
             }, this));
 
-            this.fire('stop-rendering', {dialog: this, div: div});
+            this.fire('stop-rendering', "ddddddd");
+            
+            $(this).trigger("mytest", { name: 'ssdsdsd', name3 :'ssssss', name2:'ddddddddddd'});
+            
             this.isRendered = true;
         }
     },
@@ -545,12 +549,19 @@ var DepartmentDialog = Dialog.extend({
             ]
         });
 
-        this.subscribe('stop-rendering', this.onStopRender, this);
-    },
+       // this.subscribe('stop-rendering', this.onStopRender, this);
 
-    onStopRender: function () {
-        console.log('STOP');
+        $(this).on("mytest" , function(event, param) {
+
+            console.log('name',param.name);
+            console.log('name2',param.name2);
+            console.log('name3',param.name3);
+        
+        });
+                
     }
+
+   
 });
 
 

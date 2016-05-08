@@ -67,6 +67,7 @@ public class DepartmentController {
     @RequestMapping(value = "/myDepartment", method = RequestMethod.GET)
     @ResponseBody
     public List<Department> myDepartments() {
-        return departmentService.getAllDepartments();
+        List<Department> allDepartments = departmentService.getAllDepartments();
+        return allDepartments;
     }
 }

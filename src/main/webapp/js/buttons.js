@@ -49,7 +49,7 @@ var ButtonEditDepartment = ButtonType.extend({
     createElement: function () {
         var btn = $('<input/>', {
             type: 'button',
-            value: 'Employees',
+            value: 'Edit',
             name: this.idDep,
             on: {
                 click: function () {
@@ -73,26 +73,30 @@ var ButtonDeleteDepartment = ButtonType.extend({
     init: function (id) {
         this.idDep = id;
     },
-    createElement: function () {
+    createElement: function (context) {
+        var idDep = this.idDep;
         var btn = $('<input/>', {
             type: 'button',
             value: 'Delete',
-            name: this.idDep,
+            name: idDep,
             on: {
                 click: function () {
-                    var departmentService = new DepartmentService();
-                    departmentService.delete(this.name).then(function (data) {
-                        $('#wwww').remove();
-                        console.log("department is deleted");
-                        departmentService.getAll().then(function (data) {
-                            var dep = new DepartmentTable(data);
-                            dep.render();
+                    document.getElementById('wwww').addEventListener('click', deleteR, false);
+                    function deleteR(e) {
+                        var departmentService = new DepartmentService();
+                        departmentService.delete(idDep).then(function () {
+                            if (!e) {
+                                e = window.event;
+                            }
+                            if (e.target.value == "Delete") {
+                                var row = e.target.parentNode.parentNode.rowIndex;
+                                context.deleteRow(row);
+                            }
+                            console.log("department is deleted");
+                        }, function () {
+                            console.log("department is not exist");
                         });
-
-                        
-                    }, function () {
-                        console.log("department is not exist");
-                    });
+                    }
                 }
             }
         });

@@ -10,11 +10,16 @@ $( document ).ready(function() {
     });
     
     //var contrBtn = new ButtonType("Create New");
-
+    
     var depDiv = $('<div id="departmentDiv"/>');
     var ff = (new ButtonType("Create New")).createElement();
-
+    
     $('#table-content').append(depDiv);
     $('#table-content').append(ff);
+
+
+
+    // var dep = new DepartmentDialog();
+    // dep.render();
 
 });
