@@ -388,7 +388,7 @@ function EmployeeForm() {
 }
 
 //----------------------------------------------------------------------------------------------------------------------
-
+/*
 var TextType = Class.extend({
     init: function (text) {
         this.text = text;
@@ -564,6 +564,6 @@ var DepartmentDialog = Dialog.extend({
    
 });
 
-
+*/
 
 

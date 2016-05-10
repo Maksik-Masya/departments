@@ -2,12 +2,10 @@ var ButtonType = Class.extend({
     init: function (text) {
         this.text = text;
     },
-
     createElement: function () {
         var btn = $('<input/>', {
             type: 'button'
         });
-
         if (this.text) {
             btn.val(this.text);
         }
@@ -20,25 +18,22 @@ var ButtonListEmployee = ButtonType.extend({
         this.idDep = id;
     },
     createElement: function () {
-        var btn = $('<input/>', {
+        var idDep = this.idDep;
+        return $('<input/>', {
             type: 'button',
             value: 'Employees',
-            name: this.idDep,
             on: {
                 click: function () {
-
-                    var idDep = this.name;
-
-                    (new EmployeeService()).getAll(idDep).then(function (data) {
-
-
-                    }, function () {
-                        console.log("employees isn't exist");
+                    var employeeService = new EmployeeService();
+                    employeeService.getAll(idDep).then(function (data) {
+                        var dep = new EmployeeTable(data);
+                        dep.render();
+                        var btn = (new ButtonType("Create New")).createElement();
+                        $('#content').append(btn);
                     });
                 }
             }
         });
-        return btn;
     }
 });
 
@@ -47,7 +42,7 @@ var ButtonEditDepartment = ButtonType.extend({
         this.idDep = id;
     },
     createElement: function () {
-        var btn = $('<input/>', {
+        return $('<input/>', {
             type: 'button',
             value: 'Edit',
             name: this.idDep,
@@ -65,7 +60,6 @@ var ButtonEditDepartment = ButtonType.extend({
                 }
             }
         });
-        return btn;
     }
 });
 
@@ -75,31 +69,48 @@ var ButtonDeleteDepartment = ButtonType.extend({
     },
     createElement: function (context) {
         var idDep = this.idDep;
-        var btn = $('<input/>', {
+        return $('<input/>', {
             type: 'button',
             value: 'Delete',
-            name: idDep,
             on: {
                 click: function () {
-                    document.getElementById('wwww').addEventListener('click', deleteR, false);
-                    function deleteR(e) {
-                        var departmentService = new DepartmentService();
-                        departmentService.delete(idDep).then(function () {
-                            if (!e) {
-                                e = window.event;
-                            }
-                            if (e.target.value == "Delete") {
-                                var row = e.target.parentNode.parentNode.rowIndex;
-                                context.deleteRow(row);
-                            }
-                            console.log("department is deleted");
-                        }, function () {
-                            console.log("department is not exist");
-                        });
-                    }
+                    var departmentService = new DepartmentService();
+                    departmentService.delete(idDep).then(function () {
+                        context.removeRow(idDep);
+                        context.render();
+                        var btn = (new ButtonType("Create New")).createElement();
+                        $('#content').append(btn);
+                    }, function () {
+                        console.log("department is not exist");
+                    });
                 }
             }
         });
-        return btn;
+    }
+});
+
+var ButtonDeleteEmployee = ButtonType.extend({
+    init: function (id) {
+        this.id = id;
+    },
+    createElement: function (context) {
+        var id = this.id;
+        return $('<input/>', {
+            type: 'button',
+            value: 'Delete',
+            on: {
+                click: function () {
+                    var employeeService = new EmployeeService();
+                    employeeService.delete(id).then(function () {
+                        context.removeRow(id);
+                        context.render();
+                        var btn = (new ButtonType("Create New")).createElement();
+                        $('#content').append(btn);
+                    }, function () {
+                        console.log("department is not exist");
+                    });
+                }
+            }
+        });
     }
 });

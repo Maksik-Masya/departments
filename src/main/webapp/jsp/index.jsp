@@ -15,12 +15,13 @@
     <script type="text/javascript" src="/js/employeeForm.js"></script>
     <script type="text/javascript" src="/js/employeeService.js"></script>
     <script type="text/javascript" src="/js/departmentService.js"></script>
-    <script type="text/javascript" src="/js/departmentForm.js"></script>
+    <script type="text/javascript" src="/js/dialogs.js"></script>
+    <script type="text/javascript" src="/js/tables.js"></script>
     <script type="text/javascript" src="/js/start.js"></script>
     <title>All Departments</title>
 </head>
 <body>
-<div class="department-table-form" id="table-content">
+<div class="department-table-form" id="content">
 </div>
 </body>
 </html>
