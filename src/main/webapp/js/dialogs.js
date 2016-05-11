@@ -4,41 +4,24 @@ var TextType = Class.extend({
     },
 
     createElement: function () {
-        var validatedRules = {
-            rules: {
-                departm_name_input: {
-                    required: true,
-                    minlength: 3
-                }
-            }, messages: {
-                departm_name_input: {
-                    minlength: "Min length is 3",
-                    required: "This is required field"
-                }
-            }
-        };
+        var val = '';
+        if (this.text) {
+            val = this.text;
+        }
+
         return $('<input />',
             {
                 id: 'departm_name_input',
                 class: 'input-field',
                 type: 'text',
+                value: val,
                 on: {
                     input: function () {
-                       // $('#departmentFormForValid').validate(validatedRules);
 
-                        $("#departmentFormForValid").validate(validatedRules);
-                       // alert("dfdfdfdf");
                     }
                 }
 
             });
-
-        //if (this.text) {
-        //    input.val(this.text);
-        //}
-        //
-        //input.addClass('input-field');
-        //return input;
     }
 });
 
@@ -59,6 +42,7 @@ var FixedSelectType = TextType.extend({
 
     createElement: function () {
         var select = $('<select/>');
+        select.addClass('select-field');
 
         this.elements.forEach(function (el) {
             $('<option/>')
@@ -72,17 +56,19 @@ var FixedSelectType = TextType.extend({
 });
 
 var AjaxSelectType = FixedSelectType.extend({
-    init: function (url) {
+    init: function (id) {
         this._super([]);
-
-        this.url = url;
+        this.id = id;
     },
 
     createElement: function () {
         this.select = this._super();
 
         $.ajax({
-            url: url,
+            type: "get",
+            contentType: "application/json",
+            url: "/myDepartment",
+            dataType: 'json',
             success: $.proxy(this.processResponse, this)
         });
         return this.select;
@@ -90,12 +76,25 @@ var AjaxSelectType = FixedSelectType.extend({
 
     processResponse: function (response) {
 
-        response.forEach(proxy(function () {
-            $('<option/>')
-                .text(el)
-                .val(el)
-                .appendTo(this.select);
-        }, this));
+
+        for(var i in response) {
+            //var option = $('<option/>');
+            //option.text(response[i].name);
+            //option.val(response[i].departmentid);
+
+
+
+            var option;
+            if (response[i].departmentid == this.id) {
+                option = $("<option value='" + response[i].departmentid + "' selected>" +
+                    response[i].name + "</option>");
+            }
+            else {
+                option = $("<option value='" + response[i].departmentid + "'>" + response[i].name + "</option>");
+            }
+            option.appendTo(this.select);
+        }
+
     }
 });
 
@@ -116,37 +115,24 @@ var DepartmentSelectType = FixedSelectType.extend({
     }
 });
 
-var EventSupport = Class.extend({
 
-    subscribe: function (event, handler, context) {
-        $(this).on(event, $.proxy(handler, context));
-    },
-
-    fire: function (event, data) {
-        $(this).trigger(event, data);
-    }
-});
-
-var Dialog = EventSupport.extend({
+var Dialog = Class.extend({
     init: function (config) {
         this.config = config;
     },
 
     render: function () {
 
-      //  console.log(this.config.validatedRules);
-
-
-        this.divForm = $("<form id='departmentFormForValid' class='department-form'/>");
-
-
-
+        this.divForm = $("<form/>", {
+            id: 'departmentFormForValid',
+            class: 'department-form'
+        });
         this.config.container.html(this.divForm);
 
         this.config.fields.forEach($.proxy(function (i) {
             var el = i.type.createElement();
 
-            el.data('name', i.label);
+            el.data('name', i.name);
 
             var label = $('<label/>')
                 .text(i.label)
@@ -160,7 +146,10 @@ var Dialog = EventSupport.extend({
 
         }, this));
 
-       //$('#departmentFormForValid').validate(this.config.validatedRules);
+        var btn = this.config.btnSave.createElement(this);
+        this.divForm.append(btn);
+        var btnC = this.config.btnCancel.createElement(this);
+        this.divForm.append(btnC);
     },
 
     getData: function () {
@@ -177,34 +166,34 @@ var Dialog = EventSupport.extend({
 });
 
 var DepartmentDialog = Dialog.extend({
-    init: function () {
-        var validatedRules = {
-            rules: {
-                departm_name_input: {
-                    required: true,
-                    minlength: 3
-                }
-            }, messages: {
-                departm_name_input: {
-                    minlength: "Min length is 3",
-                    required: "This is required field"
-                }
-            }
-        };
-
+    init: function (data) {
         this._super({
             container: $("#content"),
-            validatedRules: validatedRules,
+            btnSave: new ButtonSaveDepartment(),
+            btnCancel: new ButtonCancelDepartment(),
+            departmentID: data.departmentid,
             fields: [
-                {label: 'Department name', type: new TextType('text')}
-                // {label: 'Email', type: new DateType('2015/12/9')}
-                //{label: 'xixi', type: new FixedSelectType(['a', 'b', 'c'])}
+                {label: 'Department name', type: new TextType(data.name), name: 'departmentName'}
             ]
         });
-
-
     }
+});
 
-
+var EmployeeDialog = Dialog.extend({
+    init: function (data) {
+        this._super({
+            container: $("#content"),
+            btnSave: new ButtonSaveDepartment(),
+            btnCancel: new ButtonCancelDepartment(),
+            fields: [
+                {label: 'First name', type: new TextType(data.name), name: 'firstName'},
+                {label: 'Last name', type: new TextType(data.name), name: 'lastName'},
+                {label: 'Birthday', type: new DateType(), name: 'dob'},
+                {label: 'Salary', type: new TextType(data.name), name: 'salary'},
+                {label: 'Email', type: new TextType(data.name), name: 'email'},
+                {label: 'Department', type: new AjaxSelectType(data.departmentid)}
+            ]
+        });
+    }
 });
 

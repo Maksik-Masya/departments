@@ -42,20 +42,22 @@ var ButtonEditDepartment = ButtonType.extend({
         this.idDep = id;
     },
     createElement: function () {
+        var idDep = this.idDep;
         return $('<input/>', {
             type: 'button',
             value: 'Edit',
-            name: this.idDep,
             on: {
                 click: function () {
 
-                    var idDep = this.name;
+                    var service = new DepartmentService();
+                    service.isExist(idDep).then(function (data) {
 
-                    (new EmployeeService()).getAll(idDep).then(function (data) {
-
+                        var departmentDialog = new DepartmentDialog(data);
+                        departmentDialog.render();
 
                     }, function () {
-                        console.log("employees isn't exist");
+                        var departmentDialog = new DepartmentDialog('');
+                        departmentDialog.render();
                     });
                 }
             }
@@ -83,6 +85,74 @@ var ButtonDeleteDepartment = ButtonType.extend({
                     }, function () {
                         console.log("department is not exist");
                     });
+                }
+            }
+        });
+    }
+});
+
+var ButtonSaveDepartment = ButtonType.extend({
+    init: function () {
+        //this.idDep = id;
+    },
+    createElement: function (context) {
+        // var idDep = this.idDep;
+        return $('<input/>', {
+            class: "submit-button",
+            type: 'button',
+            value: 'Save',
+            on: {
+                click: function () {
+
+                    var data = context.getData();
+                    var departmentObj = {"departmentid": context.config.departmentID, "name": data.departmentName};
+
+                    var departmentService = new DepartmentService();
+
+                    departmentService.save(departmentObj).then(function (resp) {
+                        if (resp.status == "SUCCESS") {
+
+                            departmentService.getAll().then(function (data) {
+                                var dep = new DepartmentTable(data);
+                                dep.render();
+                                var ff = (new ButtonType("Create New")).createElement();
+                                $('#content').append(ff);
+                            });
+
+                            console.log("save success")
+                        }
+                        else {
+                            console.log("save fail");
+                            //  spanName.text(resp.result.name);
+                        }
+                    });
+                }
+            }
+        });
+    }
+});
+
+var ButtonCancelDepartment = ButtonType.extend({
+    init: function () {
+        //this.idDep = id;
+    },
+    createElement: function (context) {
+        // var idDep = this.idDep;
+        return $('<input/>', {
+            class: "cancel-button",
+            type: 'button',
+            value: 'Cancel',
+            on: {
+                click: function () {
+
+                    var departmentService = new DepartmentService();
+                    departmentService.getAll().then(function (data) {
+                        var dep = new DepartmentTable(data);
+                        dep.render();
+                        var ff = (new ButtonType("Create New")).createElement();
+                        $('#content').append(ff);
+                    });
+
                 }
             }
         });

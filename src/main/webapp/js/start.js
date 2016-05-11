@@ -1,6 +1,4 @@
-
-
-$( document ).ready(function() {
+$(document).ready(function () {
 
 
     //var departmentService = new DepartmentService();
@@ -12,25 +10,7 @@ $( document ).ready(function() {
     //});
 
 
-    var validatedRules = {
-        rules: {
-            departm_name_input: {
-                required: true,
-                minlength: 3
-            }
-        }, messages: {
-            departm_name_input: {
-                minlength: "Min length is 3",
-                required: "This is required field"
-            }
-        }
-    };
-
-
-    var dialog = new DepartmentDialog();
+    var dialog = new EmployeeDialog('');
     dialog.render();
-
-  //  $('#departmentFormForValid').validate(validatedRules);
-
-
+    //dialog.getData();
 });
