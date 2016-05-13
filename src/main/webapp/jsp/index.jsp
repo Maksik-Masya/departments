@@ -9,14 +9,17 @@
     <link type="text/css" rel="stylesheet" href="/css/myStyle.css"/>
     <script src="//code.jquery.com/jquery-1.9.1.js"></script>
     <script type="text/javascript" src="/js/class.js"></script>
-    <script type="text/javascript" src="/js/models.js"></script>
-    <script type="text/javascript" src="/js/buttons.js"></script>
-    <script type="text/javascript" src="/js/employeeForm.js"></script>
-    <script type="text/javascript" src="/js/employeeService.js"></script>
-    <script type="text/javascript" src="/js/departmentService.js"></script>
     <script type="text/javascript" src="/js/jquery.validate.min.js"></script>
-    <script type="text/javascript" src="/js/dialogs.js"></script>
-    <script type="text/javascript" src="/js/tables.js"></script>
+    <%--<script type="text/javascript" src="/js/models.js"></script>--%>
+    <%--<script type="text/javascript" src="/js/buttons.js"></script>--%>
+    <%--//<script type="text/javascript" src="/js/employeeForm.js"></script>--%>
+    <script type="text/javascript" src="/js/employeeServiceNew.js"></script>
+    <script type="text/javascript" src="/js/buttonHandler.js"></script>
+    <script type="text/javascript" src="/js/formDraw.js"></script>
+    <script type="text/javascript" src="/js/tableDraw.js"></script>
+    <script type="text/javascript" src="/js/departmentServiceNew.js"></script>
+    <%--<script type="text/javascript" src="/js/dialogs.js"></script>--%>
+    <%--<script type="text/javascript" src="/js/tables.js"></script>--%>
     <script type="text/javascript" src="/js/start.js"></script>
     <title>All Departments</title>
 </head>

@@ -17,10 +17,6 @@ import org.springframework.web.servlet.ModelAndView;
 import java.util.List;
 import java.util.Map;
 
-/**
- * Created by max on 24.04.16.
- */
-
 @Controller
 public class EmployeeController {
 
@@ -42,18 +38,6 @@ public class EmployeeController {
         return employees;
     }
 
-    //    @RequestMapping(value = "/addEditEmployee")
-//    public ModelAndView addOrEditEmployee(@RequestParam(required = false) Integer id,
-//                                          @RequestParam(required = false) Integer id_department) {
-//        ModelAndView modelAndView = new ModelAndView("employee");
-//        if (id != null) {
-//            Employee employee = employeeService.getEmployeeById(id);
-//            modelAndView.addObject("employee", employee);
-//            modelAndView.addObject("id_department", id_department);
-//        }
-//        modelAndView.addObject("departments", departmentService.getAllDepartments());
-//        return modelAndView;
-//    }
     @RequestMapping(value = "/addEditEmployee")
     @ResponseBody
     public Employee addOrEditEmployee(@RequestParam(required = false) Integer id) {
@@ -79,17 +63,6 @@ public class EmployeeController {
             return jsonResponse;
         }
     }
-
-//    @RequestMapping(value = "/delEmployee", method = RequestMethod.POST)
-//    @ResponseBody
-//    public ModelAndView deleteEmployee(@RequestParam Integer id,
-//                                       @RequestParam(required = false) Integer id_department) {
-//        ModelAndView modelAndView = new ModelAndView("redirect:/listEmployee");
-//        Employee employee = employeeService.getEmployeeById(id);
-//        employeeService.deleteEmployee(employee);
-//        modelAndView.addObject("departmentId", id_department);
-//        return modelAndView;
-//    }
 
     @RequestMapping(value = "/delEmployee", method = RequestMethod.POST)
     @ResponseBody

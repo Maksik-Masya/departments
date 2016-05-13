@@ -28,9 +28,7 @@ var TextType = Class.extend({
 var DateType = TextType.extend({
     createElement: function () {
         var input = this._super();
-
-        input.attr('placeholder', 'dd/MM/yyyy');
-
+        input.attr('placeholder', 'dd-MM-yyyy');
         return input;
     }
 });
@@ -50,7 +48,6 @@ var FixedSelectType = TextType.extend({
                 .val(el)
                 .appendTo(select);
         });
-
         return select;
     }
 });
@@ -63,7 +60,6 @@ var AjaxSelectType = FixedSelectType.extend({
 
     createElement: function () {
         this.select = this._super();
-
         $.ajax({
             type: "get",
             contentType: "application/json",
@@ -75,15 +71,7 @@ var AjaxSelectType = FixedSelectType.extend({
     },
 
     processResponse: function (response) {
-
-
         for(var i in response) {
-            //var option = $('<option/>');
-            //option.text(response[i].name);
-            //option.val(response[i].departmentid);
-
-
-
             var option;
             if (response[i].departmentid == this.id) {
                 option = $("<option value='" + response[i].departmentid + "' selected>" +
@@ -94,27 +82,8 @@ var AjaxSelectType = FixedSelectType.extend({
             }
             option.appendTo(this.select);
         }
-
     }
 });
-
-var proxy = function (fn, context) {
-    return function () {
-        fn.call(context);
-    }
-};
-
-var DepartmentSelectType = FixedSelectType.extend({
-    processResponse: function (response) {
-        response.forEach(function (el) {
-            $('<option/>')
-                .text(el.id)
-                .val(el.sdfsdf)
-                .appendTo(this.select);
-        });
-    }
-});
-
 
 var Dialog = Class.extend({
     init: function (config) {
@@ -122,7 +91,6 @@ var Dialog = Class.extend({
     },
 
     render: function () {
-
         this.divForm = $("<form/>", {
             id: 'departmentFormForValid',
             class: 'department-form'
@@ -160,7 +128,6 @@ var Dialog = Class.extend({
             var name = element.data('name');
             data[name] = text;
         });
-        console.log(data);
         return data;
     }
 });
@@ -181,17 +148,23 @@ var DepartmentDialog = Dialog.extend({
 
 var EmployeeDialog = Dialog.extend({
     init: function (data) {
+        var content = $('#content');
+        content.addClass("department-table-form");
+        content.removeClass("employee-table-form");
+        var birthdayVar = new Date(data.dob);
+        var formatedDate = birthdayVar.getFullYear() + "-" + (birthdayVar.getMonth() + 1) + "-" + birthdayVar.getDate();
         this._super({
-            container: $("#content"),
-            btnSave: new ButtonSaveDepartment(),
-            btnCancel: new ButtonCancelDepartment(),
+            container: content,
+            btnSave: new ButtonSaveEmployee(),
+            btnCancel: new ButtonCancelEmployee(data.department.departmentid),
+            employeeID: data.id,
             fields: [
-                {label: 'First name', type: new TextType(data.name), name: 'firstName'},
-                {label: 'Last name', type: new TextType(data.name), name: 'lastName'},
-                {label: 'Birthday', type: new DateType(), name: 'dob'},
-                {label: 'Salary', type: new TextType(data.name), name: 'salary'},
-                {label: 'Email', type: new TextType(data.name), name: 'email'},
-                {label: 'Department', type: new AjaxSelectType(data.departmentid)}
+                {label: 'First name', type: new TextType(data.firstName), name: 'firstName'},
+                {label: 'Last name', type: new TextType(data.lastName), name: 'lastName'},
+                {label: 'Birthday', type: new DateType(formatedDate), name: 'dob'},
+                {label: 'Salary', type: new TextType(data.salary), name: 'salary'},
+                {label: 'Email', type: new TextType(data.email), name: 'email'},
+                {label: 'Department', type: new AjaxSelectType(data.department.departmentid), name: 'departmentid'}
             ]
         });
     }

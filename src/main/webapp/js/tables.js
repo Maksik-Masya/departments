@@ -90,8 +90,8 @@ var EmployeeTable = Table.extend({
                 dob: birthdayVar.getFullYear() + "-" + (birthdayVar.getMonth() + 1) + "-" + birthdayVar.getDate(),
                 salary: elm.salary,
                 email: elm.email,
-                button1: new ButtonDeleteEmployee(elm.id),
-                button2: new ButtonEditDepartment(elm.id)
+                button1: new ButtonDeleteEmployee(elm),
+                button2: new ButtonEditEmployee(elm.id)
             });
         });
         this._super({

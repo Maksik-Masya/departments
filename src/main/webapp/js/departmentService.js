@@ -34,7 +34,8 @@ DepartmentService.prototype.getAll = function () {
         type: "get",
         contentType: "application/json",
         url: "/myDepartment",
-        dataType: 'json'
+        dataType: 'json',
+        data: ''
     });
 };
 
