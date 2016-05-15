@@ -1,43 +1,90 @@
-function DepartmentService() {
+var DepartmentService = Class.extend({
+    init: function () {
+    },
 
-    DepartmentService.prototype.save = function (departmentObj) {
-        return $.ajax({
-            type: "post",
+    getAll: function () {
+        $.ajax({
+            type: "get",
             contentType: "application/json",
-            url: "/saveDepartment",
-            data: JSON.stringify(departmentObj)
+            url: "/listDepartments",
+            dataType: 'json',
+            success: function (data) {
+                (new TableDraw()).drawDepartmentTable(data);
+            },
+            error: function () {
+                new ErrorPage();
+            }
         });
-    };
+    },
 
-    DepartmentService.prototype.isExist = function (depID) {
-        return $.ajax({
-            type: "GET",
-            contentType: "application/json",
-            url: "/addEditDepartment",
-            data: {departmentId: depID},
-            dataType: 'json'
-        });
-    };
-
-    DepartmentService.prototype.delete = function (depID) {
-        return $.ajax({
-            type: "POST",
+    deleteDepartment: function (dep) {
+        var thisObj = this;
+        var id = dep.departmentid;
+        $.ajax({
             url: "/delDepartment",
-            data: {departmentId: depID},
-            dataType: 'json'
+            type: 'POST',
+            dataType: 'json',
+            data: {departmentId: id},
+            success: function () {
+                thisObj.getAll();
+            },
+            error: function () {
+                new ErrorPage();
+            }
         });
-    };
-}
+    },
 
-DepartmentService.prototype.getAll = function () {
-    return $.ajax({
-        type: "get",
-        contentType: "application/json",
-        url: "/myDepartment",
-        dataType: 'json',
-        data: ''
-    });
-};
+    saveDepartment: function () {
+        var departmentData = {};
+        $("#departmentFormForValid").find("input").each(function (i, obj) {
+            departmentData[obj.name] = $(obj).val();
+        });
 
+        var thisObj = this;
+        $.ajax({
+            url: "/saveDepartment",
+            type: 'POST',
+            data: JSON.stringify(departmentData),
+            contentType: "application/json",
+            success: function () {
+                thisObj.getAll();
+            },
+            error: function () {
+                new ErrorPage();
+            }
+        });
+    },
 
+    setValidator: function () {
+        var thisObj = this;
+        $('#departmentFormForValid').validate({
+            rules: {
+                name: {
+                    required: true,
+                    minlength: 3,
+                    remote: {
+                        url: "/uniqDepartmentName",
+                        type: "get",
+                        contentType: "application/json",
+                        data: {
+                            id: function () {
+                                return $("#id").val();
+                            }
+                        }
+                    }
+                }
+            },
+            messages: {
+                name: {
+                    minlength: "Min length is 3",
+                    required: "This is required field",
+                    remote: "Name already in use"
+                }
+            },
+            submitHandler: function () {
+                thisObj.saveDepartment()
+            }
+        });
+    }
 
+});

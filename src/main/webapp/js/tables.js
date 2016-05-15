@@ -1,111 +1,83 @@
-var Table = Class.extend({
-    init: function (config) {
-        this.config = config;
+var TableDraw = Class.extend({
+
+    init: function () {
     },
 
-    render: function () {
-        var div = this.div = $('<table id="table" border="1"/>');
-        $('#content').html(div);
-        div.addClass(this.config.tableClass);
+    drawDepartmentTable: function (data) {
+        var content = $('#content')
+            .addClass("department-table-form")
+            .removeClass("employee-table-form");
+        content.children().detach();
 
-        //create columns name
-        var trNameColumn = $('<tr/>').appendTo(div);
-        this.config.columnsName.forEach($.proxy(function (i) {
-            trNameColumn.append("<th>" + i.name + "</th>");
-        }, this));
-        trNameColumn.append("<th colspan='" + this.config.amountControlButtons + "'>Actions</th>");
+        var div = $('<div/>').on('click', (new ButtonHandler()).depAddBtn).appendTo(content);
 
-        //create rows
-        var rows = this.config.rows;
-        for (var data in rows) {
-            var tr = $('<tr/>').appendTo(div);
-            var objects = rows[data];
-            for (var field in objects) {
-                if (field != 'id') {
-                    var object = objects[field];
-                    if (object instanceof ButtonType) {
-                        var btn = object.createElement(this);
-                        var td = $('<td align="center"/>');
-                        td.append(btn);
-                        tr.append(td);
-                    } else {
-                        tr.append("<td>" + objects[field] + "</td>");
-                    }
-                }
-            }
+        var tr = $("<tr/>")
+            .append("<th>Name</th>")
+            .append("<th colspan='3'>Action</th>");
+
+        var table = $('<table border="1"/>')
+            .addClass("department-table-container")
+            .appendTo(div).html(tr);
+
+        for (var i = 0; i < data.length; i++) {
+            var department = data[i];
+            $('<tr/>').on('click', {dep: department}, (new ButtonHandler()).depTable)
+                .append($('<td>').text(department.name))
+                .append($('<td align="center">')
+                    .append($('<button id="btn_del"/>').text("Delete")))
+                .append($('<td align="center">')
+                    .append($('<button id="btn_upd"/>').text("Update")))
+                .append($('<td align="center">')
+                    .append($('<button id="bnt_list_empl"/>').text("List Employee")))
+                .appendTo(table);
         }
+
+        $('<button id="btn_add_dep"/>').text("New department").appendTo(div);
+
+
     },
 
-    removeRow: function (item) {
-        var arr = this.config.rows;
-        for (var i = arr.length; i--;) {
-            if (arr[i].id === item) {
-                arr.splice(i, 1);
-            }
+
+    drawEmployeeTable: function (data, depID) {
+        var content = $('#content')
+            .removeClass("department-table-form")
+            .addClass("employee-table-form");
+        content.children().detach();
+
+        var div = $('<div data-id=' + depID + '/>').on('click', {depID : depID},
+            (new ButtonHandler()).emplAddBtn).appendTo(content);
+
+        var tr = $("<tr/>")
+            .append("<th>First Name</th>")
+            .append("<th>Last Name</th>")
+            .append("<th>DOB</th>")
+            .append("<th>Salary</th>")
+            .append("<th>Email</th>")
+            .append("<th colspan='2'>Action</th>");
+
+        var table = $('<table border="1"/>')
+            .addClass("employee-table-container")
+            .appendTo(div).html(tr);
+
+        for (var i = 0; i < data.length; i++) {
+            var emp = data[i];
+            var birthdayVar = new Date(emp.dob);
+            var formatedDate = birthdayVar.getFullYear() + "-" + (birthdayVar.getMonth() + 1) + "-" + birthdayVar.getDate();
+            $('<tr/>').on('click', {empl: emp, depID: depID}, (new ButtonHandler()).employeeTable)
+                .append($('<td/>').text(emp.firstName))
+                .append($('<td/>').text(emp.lastName))
+                .append($('<td/>').text(formatedDate))
+                .append($('<td/>').text(emp.salary))
+                .append($('<td/>').text(emp.email))
+                .append($('<td align="center">')
+                    .append($('<button class="button primary" id="btn_del"/>').text("Delete")))
+                .append($('<td align="center">')
+                    .append($('<button class="button primary" id="btn_upd"/>').text("Update")))
+                .appendTo(table);
         }
+        $('<button class="listDepButtonCSS" id = "addNewEmployee"/>').text("New employee").appendTo(div);
+        $('<button class="listDepButtonCSS" id = "backToDep"/>').text("Departments").appendTo(div);
     }
-});
 
-var DepartmentTable = Table.extend({
-    init: function (data) {
-        var content = $('#content');
-        content.removeClass("employee-table-form");
-        content.addClass("department-table-form");
 
-        var dep = [];
-        data.forEach(function(elm) {
-            dep.push({
-                id: elm.departmentid,
-                name: elm.name,
-                button1: new ButtonDeleteDepartment(elm.departmentid),
-                button2: new ButtonEditDepartment(elm.departmentid),
-                button3: new ButtonListEmployee(elm.departmentid)
-            });
-        });
-        this._super({
-            tableClass: "department-table-container",
-            amountControlButtons: 3,
-            hiddenColumn: 'id',
-            columnsName: [
-                {name: 'Name'}
-            ],
-            rows: dep
-        });
-    }
-});
-
-var EmployeeTable = Table.extend({
-    init: function (data) {
-        var content = $('#content');
-        content.removeClass("department-table-form");
-        content.addClass("employee-table-form");
-
-        var empl = [];
-        data.forEach(function(elm) {
-            var birthdayVar = new Date(elm.dob);
-            empl.push({
-                id: elm.id,
-                firstName: elm.firstName,
-                lastName: elm.lastName,
-                dob: birthdayVar.getFullYear() + "-" + (birthdayVar.getMonth() + 1) + "-" + birthdayVar.getDate(),
-                salary: elm.salary,
-                email: elm.email,
-                button1: new ButtonDeleteEmployee(elm),
-                button2: new ButtonEditEmployee(elm.id)
-            });
-        });
-        this._super({
-            tableClass: "employee-table-container",
-            amountControlButtons: 2,
-            hiddenColumn: 'id',
-            columnsName: [
-                {name: 'First name'},
-                {name: 'Last name'},
-                {name: 'Birthday'},
-                {name: 'Salary'},
-                {name: 'Email'}
-            ],
-            rows: empl
-        });
-    }
 });

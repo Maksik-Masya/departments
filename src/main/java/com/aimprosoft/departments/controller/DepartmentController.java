@@ -3,18 +3,14 @@ package com.aimprosoft.departments.controller;
 import com.aimprosoft.departments.exception.NotValidValueException;
 import com.aimprosoft.departments.model.Department;
 import com.aimprosoft.departments.service.DepartmentService;
-import com.aimprosoft.departments.utils.JsonResponse;
+import org.hibernate.HibernateException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.util.List;
-import java.util.Map;
-
-/**
- * Created by max on 24.04.16.
- */
+import java.util.Objects;
 
 @Controller
 public class DepartmentController {
@@ -24,50 +20,35 @@ public class DepartmentController {
 
     @RequestMapping(value = "/", method = RequestMethod.GET)
     public ModelAndView departmentList() {
-        ModelAndView modelAndView = new ModelAndView("index");
-        List<Department> departmentList = departmentService.getAllDepartments();
-        modelAndView.addObject("departments", departmentList);
-        return modelAndView;
-    }
-
-    @RequestMapping(value = "/addEditDepartment", method = RequestMethod.GET)
-    @ResponseBody
-    public Department addOrEditDepartment(@RequestParam(required = false) Integer departmentId) {
-        Department department = null;
-        if (departmentId != null) {
-            department = departmentService.getDepartmentById(departmentId);
-        }
-        return department;
+        return new ModelAndView("index");
     }
 
     @RequestMapping(value = "/saveDepartment", method = RequestMethod.POST)
     @ResponseBody
-    public JsonResponse saveDepartment(@RequestBody Department department) {
-        JsonResponse jsonResponse = new JsonResponse();
-        try {
-            departmentService.addOrUpdateDepartment(department);
-            jsonResponse.setStatus("SUCCESS");
-            return jsonResponse;
-        } catch (NotValidValueException e) {
-            Map<String, String> errors = e.getErrorMap();
-            jsonResponse.setStatus("FAIL");
-            jsonResponse.setResult(errors);
-            return jsonResponse;
-        }
+    public void saveDepartment(@RequestBody Department department)
+            throws NotValidValueException, HibernateException {
+        departmentService.addOrUpdateDepartment(department);
+    }
+
+    @RequestMapping(value = "/uniqDepartmentName", method = RequestMethod.GET)
+    @ResponseBody
+    public Boolean isUniqDepartmentName(@RequestParam String name, Integer id) {
+        Department department;
+        department = departmentService.getDepartmentByName(name);
+        return department == null || (Objects.equals(department.getDepartmentid(), id));
     }
 
     @RequestMapping(value = "/delDepartment", method = RequestMethod.POST)
     @ResponseBody
-    public Department deleteDepartment(@RequestParam Integer departmentId) {
+    public Department deleteDepartment(@RequestParam Integer departmentId) throws HibernateException {
         Department department = departmentService.getDepartmentById(departmentId);
         departmentService.deleteDepartment(department);
         return department;
     }
 
-    @RequestMapping(value = "/myDepartment", method = RequestMethod.GET)
+    @RequestMapping(value = "/listDepartments", method = RequestMethod.GET)
     @ResponseBody
-    public List<Department> myDepartments() {
-        List<Department> allDepartments = departmentService.getAllDepartments();
-        return allDepartments;
+    public List<Department> myDepartments() throws HibernateException {
+        return departmentService.getAllDepartments();
     }
 }

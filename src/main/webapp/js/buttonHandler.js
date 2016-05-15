@@ -7,7 +7,7 @@ var ButtonHandler = Class.extend({
         var action = event.target.id;
 
         if (action === "btn_del") {
-            (new DepartmentService()).deleteDep(dep);
+            (new DepartmentService()).deleteDepartment(dep);
         } else if (action === "btn_upd") {
             (new FormDraw()).drawDepartmentForm(dep);
         } else if (action === "bnt_list_empl") {
@@ -42,8 +42,8 @@ var ButtonHandler = Class.extend({
         if ("addNewEmployee" === action) {
             (new FormDraw()).drawEmployeeForm(null, depID);
 
-        } else if ("redirectByDep" === action) {
-           // DepartmentServer.prototype.showList();
+        } else if ("backToDep" === action) {
+            (new DepartmentService()).getAll();
         }
     }
 

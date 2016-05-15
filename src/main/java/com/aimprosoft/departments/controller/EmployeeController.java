@@ -5,17 +5,16 @@ import com.aimprosoft.departments.model.Department;
 import com.aimprosoft.departments.model.Employee;
 import com.aimprosoft.departments.service.DepartmentService;
 import com.aimprosoft.departments.service.EmployeeService;
-import com.aimprosoft.departments.utils.JsonResponse;
+import org.hibernate.HibernateException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.datetime.DateFormatter;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.ModelAndView;
 
 import java.util.List;
-import java.util.Map;
+import java.util.Objects;
 
 @Controller
 public class EmployeeController {
@@ -32,46 +31,31 @@ public class EmployeeController {
 
     @RequestMapping(value = "/listEmployee", method = RequestMethod.GET)
     @ResponseBody
-    public List listEmployees(@RequestParam(required = false) Integer departmentId) {
+    public List listEmployees(@RequestParam(required = false) Integer departmentId) throws HibernateException {
         Department department = departmentService.getDepartmentById(departmentId);
-        List employees = employeeService.getEmployeeByDepartmentId(department);
-        return employees;
-    }
-
-    @RequestMapping(value = "/addEditEmployee")
-    @ResponseBody
-    public Employee addOrEditEmployee(@RequestParam(required = false) Integer id) {
-        Employee employee = null;
-        if (id != null) {
-            employee = employeeService.getEmployeeById(id);
-        }
-        return employee;
+        return employeeService.getEmployeeByDepartmentId(department);
     }
 
     @RequestMapping(value = "/saveEmployee", method = RequestMethod.POST)
     @ResponseBody
-    public JsonResponse saveEmployee(@RequestBody Employee employee, BindingResult bindingResult) {
-        JsonResponse jsonResponse = new JsonResponse();
-        try {
-            employeeService.addOrUpdateEmployee(employee);
-            jsonResponse.setStatus("SUCCESS");
-            return jsonResponse;
-        } catch (NotValidValueException e) {
-            Map<String, String> errors = e.getErrorMap();
-            jsonResponse.setStatus("FAIL");
-            jsonResponse.setResult(errors);
-            return jsonResponse;
-        }
+    public void saveEmployee(@RequestBody Employee employee, BindingResult bindingResult)
+            throws NotValidValueException, HibernateException {
+        employeeService.addOrUpdateEmployee(employee);
+    }
+
+    @RequestMapping(value = "/uniqEmployeeName", method = RequestMethod.GET)
+    @ResponseBody
+    public Boolean isUniqEmployeeName(@RequestParam String email, Integer id) {
+        Employee employee;
+        employee = employeeService.getEmployeeByEmail(email);
+        return employee == null || (Objects.equals(employee.getId(), id));
     }
 
     @RequestMapping(value = "/delEmployee", method = RequestMethod.POST)
     @ResponseBody
-    public Employee deleteEmployee(@RequestParam Integer id) {
-//        ModelAndView modelAndView = new ModelAndView("redirect:/listEmployee");
+    public Employee deleteEmployee(@RequestParam Integer id) throws HibernateException {
         Employee employee = employeeService.getEmployeeById(id);
         employeeService.deleteEmployee(employee);
-//        modelAndView.addObject("departmentId", id_department);
-//        return modelAndView;
         return employee;
     }
 }

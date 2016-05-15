@@ -115,13 +115,8 @@
 .error-message {
     padding: 200px;
     text-align: center;
-}
-
-#error-body {
-    background: #c7b39b ; /* Цвет фона и путь к файлу */
     color: #CD5C5C; /* Цвет текста */
 }
-
 
 .submit-button:hover {
     border: 1px solid #447314;

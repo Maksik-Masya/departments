@@ -7,7 +7,7 @@ var FormDraw = Class.extend({
         content.children().detach();
         var div = $('<div/>').appendTo(content)
             .append($("<form enctype='multipart/form-data' id='departmentFormForValid' class='department-form'/>")
-                .append($('<input type="hidden" name="departmentid"/>')
+                .append($('<input type="hidden" id="id" name="departmentid"/>')
                     .val(dep != null ? dep.departmentid : ""))
                 .append($("<label for='name' class='tittle-field'>Department Name</label>"))
                 .append($("<div class='form-field'/>")
@@ -16,7 +16,7 @@ var FormDraw = Class.extend({
                         .val(dep != null ? dep.name : "")))
                 .append($('<input class="submit-button" type="submit" value="Save"/>')));
 
-        (new DepartmentService()).validator();
+        (new DepartmentService()).setValidator();
     },
 
     drawEmployeeForm: function (emp, depID) {
@@ -33,7 +33,7 @@ var FormDraw = Class.extend({
         var div = $('<div/>').appendTo(content)
 
             .append($("<form enctype='multipart/form-data' id='employeeFormForValid' class='department-form'/>")
-                .append($('<input type="hidden" name="id"/>')
+                .append($('<input type="hidden" name="id" id="id"/>')
                     .val(emp != null ? emp.id : ""))
                 .append($('<input type="hidden" name="departmentid" value="' + depID + '"/>'))
                 .append($("<label for='firstName' class='tittle-field'>First Name</label>"))
@@ -51,7 +51,7 @@ var FormDraw = Class.extend({
                     .append($("<input name='dob' type='text'/>")
                         .addClass("input-field")
                         .val(emplDOB)
-                        .attr('placeholder', 'dd-MM-yyyy')))
+                        .attr('placeholder', 'yyyy-MM-dd')))
                 .append($("<label for='salary' class='tittle-field'>Salary</label>"))
                 .append($("<div class='form-field'/>")
                     .append($("<input name='salary' type='text'/>")
@@ -64,6 +64,6 @@ var FormDraw = Class.extend({
                         .val(emp != null ? emp.email : "")))
                 .append($('<input class="submit-button" type="submit" value="Save"/>')));
 
-        (new EmployeeService()).validator();
+        (new EmployeeService()).setValidator();
     }
 });

@@ -1,26 +1,19 @@
 <%@ page language="java" contentType="text/html; charset=EUC-KR" pageEncoding="EUC-KR" %>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-
 <html>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=EUC-KR">
     <link type="text/css" rel="stylesheet" href="/css/myStyle.css"/>
-    <script src="//code.jquery.com/jquery-1.9.1.js"></script>
+    <script type="text/javascript" src="//code.jquery.com/jquery-1.9.1.js"></script>
     <script type="text/javascript" src="/js/class.js"></script>
     <script type="text/javascript" src="/js/jquery.validate.min.js"></script>
-    <%--<script type="text/javascript" src="/js/models.js"></script>--%>
-    <%--<script type="text/javascript" src="/js/buttons.js"></script>--%>
-    <%--//<script type="text/javascript" src="/js/employeeForm.js"></script>--%>
-    <script type="text/javascript" src="/js/employeeServiceNew.js"></script>
+    <script type="text/javascript" src="/js/employeeService.js"></script>
     <script type="text/javascript" src="/js/buttonHandler.js"></script>
-    <script type="text/javascript" src="/js/formDraw.js"></script>
-    <script type="text/javascript" src="/js/tableDraw.js"></script>
-    <script type="text/javascript" src="/js/departmentServiceNew.js"></script>
-    <%--<script type="text/javascript" src="/js/dialogs.js"></script>--%>
-    <%--<script type="text/javascript" src="/js/tables.js"></script>--%>
-    <script type="text/javascript" src="/js/start.js"></script>
+    <script type="text/javascript" src="/js/forms.js"></script>
+    <script type="text/javascript" src="/js/tables.js"></script>
+    <script type="text/javascript" src="/js/departmentService.js"></script>
+    <script type="text/javascript" src="/js/drowErrorPage.js"></script>
+    <script type="text/javascript" src="/js/startApplication.js"></script>
     <title>All Departments</title>
 </head>
 <body>
