@@ -6,18 +6,18 @@ var ButtonHandler = Class.extend({
         var dep = event.data.dep;
         var action = event.target.id;
 
-        if (action === "btn_del") {
+        if (action === "btnDelete") {
             (new DepartmentService()).deleteDepartment(dep);
-        } else if (action === "btn_upd") {
+        } else if (action === "btnUpdate") {
             (new FormDraw()).drawDepartmentForm(dep);
-        } else if (action === "bnt_list_empl") {
+        } else if (action === "bntListEmpl") {
             (new EmployeeService()).getAll(dep.departmentid);
         }
     },
 
     depAddBtn: function (event) {
         var action = event.target.id;
-        if ("btn_add_dep" === action) {
+        if (action === "btnAddDep") {
             (new FormDraw()).drawDepartmentForm();
         }
     },
@@ -27,9 +27,9 @@ var ButtonHandler = Class.extend({
         var depID = event.data.depID;
         var action = event.target.id;
 
-        if (action === "btn_del") {
+        if (action === "btnDelete") {
             (new EmployeeService()).deleteEmployee(emp.id);
-        } else if (action === "btn_upd") {
+        } else if (action === "btnUpdate") {
             (new FormDraw()).drawEmployeeForm(emp, depID);
         }
     },
@@ -39,10 +39,10 @@ var ButtonHandler = Class.extend({
         var depID = event.data.depID;
         var action = event.target.id;
 
-        if ("addNewEmployee" === action) {
+        if (action === "addNewEmployee") {
             (new FormDraw()).drawEmployeeForm(null, depID);
 
-        } else if ("backToDep" === action) {
+        } else if (action === "backToDep") {
             (new DepartmentService()).getAll();
         }
     }

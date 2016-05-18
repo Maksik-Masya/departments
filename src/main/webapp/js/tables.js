@@ -24,15 +24,15 @@ var TableDraw = Class.extend({
             $('<tr/>').on('click', {dep: department}, (new ButtonHandler()).depTable)
                 .append($('<td>').text(department.name))
                 .append($('<td align="center">')
-                    .append($('<button id="btn_del"/>').text("Delete")))
+                    .append($('<button id="btnDelete"/>').text("Delete")))
                 .append($('<td align="center">')
-                    .append($('<button id="btn_upd"/>').text("Update")))
+                    .append($('<button id="btnUpdate"/>').text("Update")))
                 .append($('<td align="center">')
-                    .append($('<button id="bnt_list_empl"/>').text("List Employee")))
+                    .append($('<button id="bntListEmpl"/>').text("List Employee")))
                 .appendTo(table);
         }
 
-        $('<button id="btn_add_dep"/>').text("New department").appendTo(div);
+        $('<button id="btnAddDep"/>').text("New department").appendTo(div);
 
 
     },
@@ -70,9 +70,9 @@ var TableDraw = Class.extend({
                 .append($('<td/>').text(emp.salary))
                 .append($('<td/>').text(emp.email))
                 .append($('<td align="center">')
-                    .append($('<button class="button primary" id="btn_del"/>').text("Delete")))
+                    .append($('<button class="button primary" id="btnDelete"/>').text("Delete")))
                 .append($('<td align="center">')
-                    .append($('<button class="button primary" id="btn_upd"/>').text("Update")))
+                    .append($('<button class="button primary" id="btnUpdate"/>').text("Update")))
                 .appendTo(table);
         }
         $('<button class="listDepButtonCSS" id = "addNewEmployee"/>').text("New employee").appendTo(div);
